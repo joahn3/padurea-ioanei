@@ -20,18 +20,15 @@
             background-color: #2c3e50;
         }
 
-        /* --- 1. FUNDAL CINEMATIC --- */
+        /* FUNDAL ANIMAT */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* AICI E LINK-UL POZEI - POȚI SĂ ÎL SCHIMBI */
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             z-index: -1;
-            /* Animatia de Zoom incet */
             animation: zoomBg 30s alternate infinite linear;
         }
         
-        /* Strat intunecat peste poza */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%);
@@ -43,159 +40,132 @@
             100% { transform: scale(1.2); }
         }
 
-        /* --- 2. TITLU STILIZAT --- */
         h1 {
             font-family: 'Pacifico', cursive; color: #fff;
             text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            margin-top: 20px; font-size: 2rem; pointer-events: none; position: relative; z-index: 10;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            margin-top: 15px; font-size: 1.8rem; pointer-events: none; position: relative; z-index: 10;
         }
 
         #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; z-index: 5; }
 
         #score-board {
-            position: absolute; top: 15px; right: 20px;
-            font-size: 1.1rem; font-weight: bold; color: #fff;
+            position: absolute; top: 15px; right: 15px;
+            font-size: 1rem; font-weight: bold; color: #fff;
             background: rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(10px); /* Efect de sticla */
-            padding: 8px 18px; border-radius: 30px; z-index: 20;
+            backdrop-filter: blur(10px);
+            padding: 8px 15px; border-radius: 30px; z-index: 20;
             pointer-events: none; border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* --- 3. ELEMENTE "STICKER" & MISCARE NATURALA --- */
         .item {
-            position: absolute; font-size: 3.8rem; cursor: pointer;
-            top: -120px;
-            -webkit-tap-highlight-color: transparent; z-index: 5;
-            /* Contur alb ca la stickere */
-            text-shadow: 
-                0 0 0px #fff, 
-                0 0 5px rgba(0,0,0,0.3);
+            position: absolute; font-size: 3.5rem; cursor: pointer;
+            top: -120px; -webkit-tap-highlight-color: transparent; z-index: 5;
+            text-shadow: 0 0 5px rgba(0,0,0,0.3);
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
-            /* Animatia compusa: cadere + leganare */
             animation: fall linear forwards, sway 3s ease-in-out infinite alternate;
         }
 
-        .golden-item { font-size: 4.5rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; animation-duration: 4s !important;}
-        .letter-item { font-size: 4rem !important; filter: drop-shadow(0 0 15px white); z-index: 25 !important; animation: fall linear forwards !important;}
-        .bear-item { font-size: 5rem !important; z-index: 18 !important; filter: drop-shadow(0 0 20px red); }
+        .golden-item { font-size: 4rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; }
+        .letter-item { font-size: 3.8rem !important; filter: drop-shadow(0 0 15px white); z-index: 25 !important; animation: fall linear forwards !important;}
+        .bear-item { font-size: 4.5rem !important; z-index: 18 !important; filter: drop-shadow(0 0 20px red); }
 
         @keyframes fall { to { top: 110vh; } }
-        
-        /* Efectul de vant / leganare */
         @keyframes sway {
             0% { transform: translateX(-15px) rotate(-10deg); }
             100% { transform: translateX(15px) rotate(10deg); }
         }
 
-        /* --- 4. MODALE FROSTED GLASS --- */
+        /* MODALE (Ferestrele) */
         .modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(20, 30, 40, 0.65); /* Mai transparent */
+            background: rgba(20, 30, 40, 0.7);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100; color: white; text-align: center; padding: 20px;
-            box-sizing: border-box; 
-            backdrop-filter: blur(15px); /* BLUR PUTERNIC */
+            z-index: 100; color: white; text-align: center; padding: 15px;
+            box-sizing: border-box; backdrop-filter: blur(15px);
         }
 
         .modal-content {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px; border-radius: 20px;
+            padding: 20px; border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            max-width: 400px; width: 100%;
+            width: 100%; max-width: 360px; /* Limitam latimea maxima */
+            box-sizing: border-box;
         }
 
-        #loading-screen { background: #1a252f; z-index: 200; }
-        .loader {
-            border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #ff6b6b;
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #letter-modal { background: rgba(0,0,0,0.8); }
-        .letter-paper {
-            background: #fffdf0 url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            color: #333; padding: 30px 25px;
-            border-radius: 2px; box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            transform: rotate(-1deg);
-            max-width: 90%;
-        }
-
-        .handwritten-text {
-            font-family: 'Pacifico', cursive; font-size: 1.3rem;
-            line-height: 1.6; margin-bottom: 30px; color: #2c3e50;
-            text-align: left;
-        }
-
-        /* VOUCHER GOLD DELUXE */
+        /* FIX VOUCHER RESPONSIVE */
         .voucher-card {
             background: linear-gradient(135deg, #fffbf0 0%, #ffebcd 100%);
-            color: #333; padding: 30px 20px; border-radius: 12px;
-            width: 100%;
+            color: #333; 
+            padding: 20px 15px; 
+            border-radius: 12px;
+            width: 100%; /* Sa nu iasa din parinte */
+            box-sizing: border-box; /* Include padding in latime */
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(255, 215, 0, 0.6);
-            transform: rotate(-2deg); margin-bottom: 30px;
+            transform: rotate(-2deg); 
+            margin: 0 auto 25px auto; /* Centrat */
             border: 2px solid #DAA520; position: relative; overflow: hidden;
         }
+        
+        /* Ajustari text voucher pentru mobil */
+        .voucher-card h2 {
+            color: #ff4757; font-family: 'Pacifico'; 
+            font-size: 1.5rem; /* Mai mic putin */
+            margin: 10px 0;
+            line-height: 1.3;
+        }
+        
         .voucher-card::before {
-            content: "VIP PASS"; position: absolute; bottom: 10px; right: 10px;
+            content: "VIP PASS"; position: absolute; bottom: 5px; right: 5px;
             font-weight: bold; color: rgba(218, 165, 32, 0.3); 
             border: 3px solid rgba(218, 165, 32, 0.3);
-            padding: 5px 10px; transform: rotate(-20deg); font-size: 1.2rem;
+            padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem;
             pointer-events: none;
         }
 
-        #countdown-container { font-family: 'Quicksand', sans-serif; margin-bottom: 20px; }
         #countdown-timer {
-            font-size: 1.6rem; font-weight: bold; color: #76ff03;
+            font-size: 1.4rem; font-weight: bold; color: #76ff03;
             font-family: monospace; letter-spacing: 1px; text-shadow: 0 0 15px rgba(118, 255, 3, 0.6);
         }
 
         button.primary-btn {
             background: linear-gradient(45deg, #ff6b6b, #ee5253);
-            border: none; padding: 16px 45px;
+            border: none; padding: 15px 40px; width: 100%;
             font-size: 1.1rem; color: white; border-radius: 50px; cursor: pointer;
             font-family: 'Quicksand', sans-serif; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(238, 82, 83, 0.4); 
-            transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(238, 82, 83, 0.4); margin-top: 10px;
         }
-        button.primary-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(238, 82, 83, 0.6); }
         
         button.whatsapp-btn {
-            background-color: #25D366; border: none; padding: 14px 30px;
+            background-color: #25D366; border: none; padding: 12px 25px; width: 100%;
             font-size: 1rem; color: white; border-radius: 50px; cursor: pointer;
             font-family: 'Quicksand', sans-serif; font-weight: bold;
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); margin-top: 10px; margin-bottom: 15px;
             display: flex; align-items: center; justify-content: center; gap:8px;
         }
 
-        button:active { transform: scale(0.95); }
-        .hidden { display: none !important; }
+        /* RESTUL STILURILOR */
+        #letter-modal { background: rgba(0,0,0,0.9); padding: 10px;}
+        .letter-paper {
+            background: #fffdf0; color: #333; padding: 25px 20px;
+            border-radius: 2px; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            transform: rotate(-1deg); width: 100%; max-width: 90%;
+            box-sizing: border-box;
+        }
+        .handwritten-text { font-family: 'Pacifico', cursive; font-size: 1.1rem; line-height: 1.5; margin-bottom: 20px; color: #2c3e50; text-align: left; }
+        
+        #loading-screen { background: #1a252f; z-index: 200; }
+        .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #ff6b6b; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .firefly { position: absolute; width: 4px; height: 4px; background-color: #ffd700; border-radius: 50%; box-shadow: 0 0 10px #ffd700; opacity: 0; z-index: 2; animation: fly 15s linear infinite; }
+        @keyframes fly { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(50px, -100vh); opacity: 0; } }
+        
+        .floating-msg { position: absolute; font-weight: bold; color: #ff4757; font-size: 1.4rem; pointer-events: none; z-index: 200; text-shadow: 2px 2px 0 #fff; animation: floatUp 1s ease-out forwards; white-space: nowrap; }
+        @keyframes floatUp { to { transform: translateY(-100px) scale(1.3); opacity: 0; } }
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
-        
-        .floating-msg {
-            position: absolute; font-weight: bold; color: #ff4757;
-            font-size: 1.4rem; pointer-events: none; z-index: 50;
-            text-shadow: 2px 2px 0 #fff; animation: floatUp 1s ease-out forwards;
-            white-space: nowrap;
-        }
-        @keyframes floatUp { to { transform: translateY(-100px) scale(1.3); opacity: 0; } }
-        
-        .firefly {
-            position: absolute; width: 4px; height: 4px;
-            background-color: #ffd700; border-radius: 50%;
-            box-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b;
-            opacity: 0; z-index: 2; animation: fly 15s linear infinite; pointer-events: none;
-        }
-        @keyframes fly {
-            0% { transform: translate(0, 0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translate(100px, -100vh); opacity: 0; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -222,7 +192,7 @@
         <div class="modal-content">
             <h2>Salut, Ioana! ❤️</h2>
             <p>Am auzit că îți place la munte.<br>Hai să ne jucăm puțin!</p>
-            <div style="background:rgba(255,255,255,0.1); padding:15px; border-radius:10px; margin:20px 0; text-align:left; font-size:0.95rem;">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.9rem;">
                 🌲 <b>Brazi:</b> +1 punct<br>
                 💛 <b>Inima de Aur:</b> +5 puncte<br>
                 🐻 <b>URȘI:</b> -5 puncte (Fugi!)<br>
@@ -243,21 +213,21 @@
                 Te pupă,<br>
                 <b>Ionuț</b>
             </div>
-            <button onclick="closeLetter()" style="background:#333; color:white; border:none; padding:12px 30px; border-radius:20px; font-weight:bold; cursor:pointer;">Continuă jocul</button>
+            <button onclick="closeLetter()" style="background:#333; color:white; border:none; padding:12px 30px; border-radius:20px; font-weight:bold; cursor:pointer; width:100%;">Continuă jocul</button>
         </div>
     </div>
 
     <div id="end-screen" class="modal hidden">
         <div class="modal-content">
             <div class="voucher-card">
-                <h3 style="color: #DAA520; margin:0;">🎫 VOUCHER GOLD</h3>
-                <p style="margin:10px 0; color:#555; font-size:0.9rem;">Valabil pentru titular:</p>
-                <h2 style="color: #ff4757; font-family: 'Pacifico'; font-size: 1.8rem; margin:10px 0;">Un Masaj VIP la Tălpi 🦶</h2>
-                <p style="font-size:0.8rem; color:#aaa; margin-top:10px;">Serie Unică: LOVE-2026</p>
+                <h3 style="color: #DAA520; margin:0; font-size:1.1rem;">🎫 VOUCHER GOLD</h3>
+                <p style="margin:5px 0; color:#555; font-size:0.8rem;">Valabil pentru titular:</p>
+                <h2 style="color: #ff4757; font-family: 'Pacifico';">Un Masaj VIP la Tălpi 🦶</h2>
+                <p style="font-size:0.7rem; color:#aaa; margin-top:5px;">Serie Unică: LOVE-2026</p>
             </div>
             
             <div id="countdown-container">
-                <p style="margin:0; font-size:0.9rem; color:#ccc; margin-bottom:5px;">Revederea în:</p>
+                <p style="margin:0; font-size:0.8rem; color:#ccc; margin-bottom:5px;">Revederea în:</p>
                 <div id="countdown-timer">Calculez...</div>
             </div>
             
@@ -265,7 +235,7 @@
                 <span>💬</span> Revendică Premiul
             </button>
 
-            <button style="background:transparent; border:1px solid #777; color:#ccc; padding:10px 20px; border-radius:30px; cursor:pointer;" onclick="restartGame()">Mai joacă o dată</button>
+            <button style="background:transparent; border:1px solid #777; color:#ccc; padding:10px 20px; border-radius:30px; cursor:pointer; width:100%; margin-top:10px;" onclick="restartGame()">Mai joacă o dată</button>
         </div>
     </div>
 
@@ -290,7 +260,6 @@
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
 
-        // --- DATA REVENIRII: DUMINICA, 8 FEBRUARIE 2026 ---
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
         window.onload = function() {
@@ -348,10 +317,9 @@
 
             const rand = Math.random();
             
-            // LOGICA SPAWN - URSII SUNT 10%
             if (!letterFound && rand < 0.03 && score > 5) spawnEntity('💌', 'letter');
             else if (rand < 0.05) spawnEntity('💛', 'gold');
-            else if (rand < 0.10) spawnEntity('🐻', 'bear'); // 10% sanse de URS
+            else if (rand < 0.10) spawnEntity('🐻', 'bear'); 
             else if (rand < 0.25) {
                 const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
                 spawnEntity(badIcon, 'bad');
@@ -375,7 +343,6 @@
 
             item.style.left = Math.random() * 80 + 10 + '%';
             
-            // Viteza de cadere
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
             if(type === 'bear') duration = 2.0; 
@@ -403,7 +370,6 @@
 
         function catchItem(item, type, x, y) {
             if (!gameActive || isPaused) return;
-            
             explode(x, y, type);
 
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
@@ -443,7 +409,7 @@
                 disableForReducedMotion: true,
                 gravity: 1.5,
                 scalar: 0.7,
-                zIndex: 99
+                zIndex: 9999
             });
         }
 
@@ -504,10 +470,14 @@
         }
         
         function triggerConfetti() {
+            // FIX CONFETTI Z-INDEX SI DURATA
             var duration = 6000;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+            
             if(confettiInterval) clearInterval(confettiInterval);
+
             var animationEnd = Date.now() + duration;
+
             confettiInterval = setInterval(function() {
               var timeLeft = animationEnd - Date.now();
               if (timeLeft <= 0) return clearInterval(confettiInterval);
