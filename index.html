@@ -50,25 +50,28 @@
             z-index: 0; pointer-events: none;
         }
 
-        /* TRAIL (Urma) - Mai vizibila */
+        /* MILESTONE TOAST (Mesaj jos) */
+        #milestone-toast {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: rgba(255, 255, 255, 0.9); color: #333;
+            padding: 10px 20px; border-radius: 30px; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 80;
+            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b;
+        }
+        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
         .trail-dot {
             position: absolute; width: 8px; height: 8px;
             background: radial-gradient(circle, #fff 30%, #ffd700 100%);
-            border-radius: 50%;
-            pointer-events: none; z-index: 9999;
+            border-radius: 50%; pointer-events: none; z-index: 9999;
             box-shadow: 0 0 10px #fff, 0 0 15px #FFD700;
             animation: fadeTrail 0.6s linear forwards;
         }
-        @keyframes fadeTrail { 
-            0% { transform: scale(1); opacity: 1; } 
-            100% { transform: scale(0.2); opacity: 0; } 
-        }
+        @keyframes fadeTrail { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.2); opacity: 0; } }
 
         /* Stats Grid */
-        .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            margin: 15px 0; width: 100%;
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; width: 100%; }
         .stat-box {
             background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px;
             text-align: center; font-size: 0.8rem; color: #eee;
@@ -76,16 +79,10 @@
         }
         .stat-val { font-weight: bold; font-size: 1.1rem; color: #ffd700; display: block; }
 
-        .shield-active {
-            box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff;
-            animation: pulseShield 1s infinite alternate;
-        }
+        .shield-active { box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff; animation: pulseShield 1s infinite alternate; }
         @keyframes pulseShield { 0% { box-shadow: inset 0 0 30px #00BFFF; } 100% { box-shadow: inset 0 0 60px #00BFFF, inset 0 0 20px #fff; } }
 
-        .star {
-            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
-            z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out;
-        }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
 
         #damage-overlay {
@@ -260,6 +257,7 @@
     <div class="overlay"></div>
     
     <div id="damage-overlay"></div>
+    <div id="milestone-toast">Super!</div>
 
     <div id="loading-screen" class="modal">
         <div class="loader"></div>
@@ -286,7 +284,7 @@
 
     <div id="start-screen" class="modal hidden">
         <div class="modal-content">
-            <h2>Salut, Ioana! ❤️</h2>
+            <h2 id="greeting-text">Salut, Ioana! ❤️</h2>
             <p>Am auzit că îți place la munte.<br>Hai să ne jucăm puțin!</p>
             <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.85rem; line-height:1.6;">
                 🌲 <b>Natură:</b> +1 punct<br>
@@ -356,6 +354,8 @@
         const typewriterEl = document.getElementById('typewriter-text');
         const statBears = document.getElementById('stat-bears');
         const statCheese = document.getElementById('stat-cheese');
+        const greetingText = document.getElementById('greeting-text');
+        const milestoneToast = document.getElementById('milestone-toast');
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
@@ -407,14 +407,14 @@
             else document.title = originalTitle;
         });
 
+        // POINTER MOVE PENTRU DESKTOP SI MOBIL
         window.addEventListener('pointermove', function(e) {
-            createTrail(e.pageX, e.pageY);
+            createTrail(e.clientX, e.clientY);
         });
 
         function createTrail(x, y) {
-            // Offset random pentru mobil sa se vada sub deget
-            const offsetX = (Math.random() - 0.5) * 30;
-            const offsetY = (Math.random() - 0.5) * 30;
+            const offsetX = (Math.random() - 0.5) * 20;
+            const offsetY = (Math.random() - 0.5) * 20;
             const dot = document.createElement('div');
             dot.classList.add('trail-dot');
             dot.style.left = (x + offsetX) + 'px';
@@ -424,6 +424,7 @@
         }
 
         window.onload = function() {
+            setSmartGreeting(); // Setam salutul
             createFireflies(); 
             createStars();
             highScoreEl.innerText = "Record: " + bestScore;
@@ -451,6 +452,14 @@
             updateCountdown(); 
         };
 
+        function setSmartGreeting() {
+            const hour = new Date().getHours();
+            if(hour < 11) greetingText.innerHTML = "Neața, Ioana! ☕";
+            else if(hour < 18) greetingText.innerHTML = "Salut, Ioana! ☀️";
+            else if(hour < 22) greetingText.innerHTML = "Bună seara! 🌙";
+            else greetingText.innerHTML = "Încă trează? ✨";
+        }
+
         const targetScore = 30; 
 
         function cheatClick() {
@@ -474,6 +483,11 @@
                 if(gameActive) bgMusic.play().catch(e => console.log(e));
             }
         }
+
+        // UNLOCK AUDIO ON TOUCH
+        window.addEventListener('touchstart', function() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        }, {once:true});
 
         function startGame() {
             score = 0; comboCount = 0; updateScore(0);
@@ -502,7 +516,6 @@
             if(thoughtInterval) clearInterval(thoughtInterval);
             if(window.confetti) window.confetti.reset();
 
-            if(audioCtx.state === 'suspended') audioCtx.resume();
             bgMusic.muted = isMuted;
             bgMusic.volume = 0.6; 
             bgMusic.play().catch(e => console.log("Audio waiting"));
@@ -511,9 +524,23 @@
             thoughtInterval = setInterval(spawnThought, 12000); 
         }
 
+        function showMilestone(text) {
+            milestoneToast.innerText = text;
+            milestoneToast.classList.add('show');
+            setTimeout(() => milestoneToast.classList.remove('show'), 2000);
+            playTone(600, 'sine', 0.2);
+        }
+
         function updateScore(val) {
+            let oldScore = score;
             score += val; if(score < 0) score = 0;
             scoreLabel.innerText = "Scor: " + score;
+
+            // Milestones logic
+            if(oldScore < 10 && score >= 10) showMilestone("Super Start! 🚀");
+            if(oldScore < 30 && score >= 30) showMilestone("Premiu Deblocat! 🎁");
+            if(oldScore < 50 && score >= 50) showMilestone("Ești Expertă! 🌟");
+            if(oldScore < 100 && score >= 100) showMilestone("LEGENDA! 👑");
 
             let percentage = (score / targetScore) * 100;
             if(percentage > 100) percentage = 100;
@@ -568,7 +595,7 @@
 
             const rand = Math.random();
             
-            // LOGICA SPAWN
+            // CRESCUT SANSELE SCRISORII LA 15% SI PRAG MAI MIC
             if (!letterFound && rand < 0.15 && score > 1) spawnEntity('💌', 'letter');
             else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
             else if (rand < 0.04) spawnEntity('🧀', 'cheese'); 
