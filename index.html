@@ -4,45 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Surpriză pentru Ioana</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌲</text></svg>">
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
 
         body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+            margin: 0; padding: 0; overflow: hidden;
             font-family: 'Quicksand', sans-serif;
+            /* Fundal Munte */
             background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed; 
             background-size: cover;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            touch-action: none; 
-            user-select: none;
+            display: flex; flex-direction: column; align-items: center;
+            touch-action: none; user-select: none;
         }
 
         body::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.35); /* Putin mai intunecat pentru contrast */
             z-index: 1;
         }
 
-        /* LICURICI (Fireflies) */
+        /* LICURICI */
         .firefly {
-            position: absolute;
-            width: 4px; height: 4px;
-            background-color: #ffd700;
-            border-radius: 50%;
+            position: absolute; width: 4px; height: 4px;
+            background-color: #ffd700; border-radius: 50%;
             box-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b;
-            opacity: 0;
-            z-index: 2;
-            animation: fly 15s linear infinite;
-            pointer-events: none;
+            opacity: 0; z-index: 2; animation: fly 15s linear infinite; pointer-events: none;
         }
-
         @keyframes fly {
             0% { transform: translate(0, 0); opacity: 0; }
             10% { opacity: 1; }
@@ -53,93 +45,47 @@
         h1, #game-container, .modal, #loading-screen { z-index: 5; }
 
         h1 {
-            font-family: 'Pacifico', cursive;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            margin-top: 15px;
-            font-size: 1.8rem;
-            pointer-events: none;
-            position: relative;
+            font-family: 'Pacifico', cursive; color: #fff;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.9);
+            margin-top: 15px; font-size: 1.8rem; pointer-events: none; position: relative;
         }
 
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+        #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
 
         #score-board {
-            position: absolute;
-            top: 10px; right: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            padding: 8px 15px;
-            border-radius: 20px;
-            z-index: 20;
-            pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.3);
+            position: absolute; top: 10px; right: 20px;
+            font-size: 1.2rem; font-weight: bold; color: #fff;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            padding: 8px 15px; border-radius: 20px; z-index: 20;
+            pointer-events: none; border: 1px solid rgba(255,255,255,0.4);
         }
 
         .item {
-            position: absolute;
-            font-size: 3.5rem;
-            cursor: pointer;
-            animation: fall linear forwards;
-            top: -100px;
-            -webkit-tap-highlight-color: transparent;
-            z-index: 5;
+            position: absolute; font-size: 3.5rem; cursor: pointer;
+            animation: fall linear forwards; top: -120px;
+            -webkit-tap-highlight-color: transparent; z-index: 5;
             filter: drop-shadow(0 4px 5px rgba(0,0,0,0.5));
         }
 
-        .golden-item {
-            font-size: 4.5rem !important;
-            filter: drop-shadow(0 0 15px gold);
-            z-index: 20 !important;
+        .golden-item { font-size: 4.5rem !important; filter: drop-shadow(0 0 20px gold); z-index: 20 !important; }
+        .letter-item { 
+            font-size: 4rem !important; filter: drop-shadow(0 0 10px white); 
+            animation: floatDown 3s ease-in-out infinite, fall 6s linear forwards !important; 
+            z-index: 25 !important; 
         }
-        
-        .letter-item {
-            font-size: 4rem !important;
-            filter: drop-shadow(0 0 10px white);
-            animation: floatDown 3s ease-in-out infinite, fall 6s linear forwards !important;
-            z-index: 25 !important;
-        }
+        .bear-item { font-size: 5rem !important; z-index: 18 !important; filter: drop-shadow(0 0 15px red); }
 
-        .bear-item {
-            font-size: 5rem !important;
-            z-index: 18 !important;
-            filter: drop-shadow(0 0 10px red);
-        }
-
-        @keyframes floatDown {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(20px); }
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
+        @keyframes floatDown { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(20px); } }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
         .modal {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            backdrop-filter: blur(8px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; color: white; text-align: center; padding: 20px;
+            box-sizing: border-box; backdrop-filter: blur(8px);
         }
 
-        /* LOADING */
         #loading-screen { background: #2c3e50; z-index: 200; }
         .loader {
             border: 5px solid #f3f3f3; border-top: 5px solid #ff6b6b;
@@ -148,10 +94,9 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* SCRISOARE */
         #letter-modal {
             background: #fffdf0; color: #333; padding: 30px 20px;
-            border-radius: 5px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border-radius: 5px; box-shadow: 0 0 50px rgba(0,0,0,0.9);
             border: 10px solid rgba(0,0,0,0.05);
         }
         .handwritten-text {
@@ -159,32 +104,34 @@
             line-height: 1.5; margin-bottom: 30px; color: #2c3e50;
             text-align: left; width: 100%; max-width: 500px;
         }
-        .close-letter-btn {
-            background-color: #333; color: white; font-size: 0.9rem;
-            padding: 10px 20px; border: none; border-radius: 50px; cursor: pointer;
-        }
 
-        /* VOUCHER & COUNTDOWN */
+        /* GRAFICA VOUCHER IMBUNATATITA */
         .voucher-card {
-            background: white; color: #333; padding: 20px;
-            border-radius: 10px; width: 85%; max-width: 350px;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
-            transform: rotate(-2deg); margin-bottom: 15px;
-            border: 2px dashed #333; position: relative;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            color: #333; padding: 25px; border-radius: 12px;
+            width: 85%; max-width: 350px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.8); /* Glow auriu */
+            transform: rotate(-2deg); margin-bottom: 20px;
+            border: 4px double #DAA520; /* Margine dubla aurie */
+            position: relative; overflow: hidden;
         }
-        .voucher-card::after {
-            content: "VALABIL"; position: absolute; top: 10px; right: 10px;
-            font-weight: bold; color: #bbb; border: 2px solid #bbb;
-            padding: 2px 5px; transform: rotate(15deg); font-size: 0.7rem;
+        /* Stampila APROBAT */
+        .voucher-card::before {
+            content: "APROBAT"; position: absolute; bottom: 10px; right: 10px;
+            font-weight: bold; color: rgba(255, 0, 0, 0.2); 
+            border: 3px solid rgba(255, 0, 0, 0.2);
+            padding: 5px 10px; transform: rotate(-20deg); font-size: 1.5rem;
+            pointer-events: none;
+        }
+        .voucher-card h3 {
+            color: #DAA520; text-transform: uppercase; letter-spacing: 2px;
+            border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 0;
         }
 
-        #countdown-container {
-            font-family: 'Quicksand', sans-serif;
-            margin-bottom: 20px;
-        }
+        #countdown-container { font-family: 'Quicksand', sans-serif; margin-bottom: 20px; }
         #countdown-timer {
-            font-size: 1.4rem; font-weight: bold; color: #90EE90;
-            font-family: monospace; letter-spacing: 1px;
+            font-size: 1.5rem; font-weight: bold; color: #76ff03;
+            font-family: monospace; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         button.primary-btn {
@@ -196,19 +143,17 @@
         
         button.whatsapp-btn {
             background-color: #25D366; border: none; padding: 12px 25px;
-            font-size: 0.9rem; color: white; border-radius: 50px; cursor: pointer;
+            font-size: 1rem; color: white; border-radius: 50px; cursor: pointer;
             font-family: 'Quicksand', sans-serif; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-top: 10px; margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-top: 10px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: center; gap:8px;
         }
 
         button:active { transform: scale(0.95); }
         .hidden { display: none !important; }
         .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-15px); }
-            75% { transform: translateX(15px); }
-        }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
+        
         .floating-msg {
             position: absolute; font-weight: bold; color: #ff4757;
             font-size: 1.3rem; pointer-events: none; z-index: 50;
@@ -251,31 +196,32 @@
         <div style="background: #fff; padding: 20px; border-radius: 5px; max-width: 90%;">
             <h3 style="color: #333; margin-top:0;">💌 De la Ionuț</h3>
             <div class="handwritten-text">
-                Hey, Ioana! 🌲<br><br>
+                Hey, Campiono! 🌲<br><br>
                 Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>
                 M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>
                 Distracție plăcută în continuare, mănâncă ceva bun și pentru mine și... <b>ai grijă la urși!</b> 🐻<br><br>
                 Te pupă,<br>
                 <b>Ionuț</b>
             </div>
-            <button class="close-letter-btn" onclick="closeLetter()">Închide și continuă jocul</button>
+            <button class="close-letter-btn" onclick="closeLetter()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:20px;">Închide și continuă jocul</button>
         </div>
     </div>
 
     <div id="end-screen" class="modal hidden">
         <div class="voucher-card">
-            <h3 style="border-bottom: 2px solid #eee; padding-bottom:10px; margin-top:0;">🎫 VOUCHER</h3>
-            <p style="margin:5px 0">Valabil pentru:</p>
-            <h2 style="color: #ff4757; font-family: 'Pacifico'; font-size: 1.6rem; margin:10px 0;">Un Masaj VIP la Tălpi</h2>
+            <h3>🎫 VOUCHER GOLD</h3>
+            <p style="margin:5px 0; color:#555;">Valabil pentru titular:</p>
+            <h2 style="color: #ff4757; font-family: 'Pacifico'; font-size: 1.6rem; margin:15px 0;">Un Masaj VIP la Tălpi 🦶</h2>
+            <p style="font-size:0.8rem; color:#888;">Serie: LOVE-2026</p>
         </div>
         
         <div id="countdown-container">
-            <p style="margin:0; font-size:0.9rem;">Timp rămas până la livrarea masajului:</p>
-            <div id="countdown-timer">00z 00h 00m 00s</div>
+            <p style="margin:0; font-size:0.9rem; color:#ddd;">Revederea în:</p>
+            <div id="countdown-timer">Calculez...</div>
         </div>
         
         <button class="whatsapp-btn" onclick="sendWhatsapp()">
-            Revendică Premiul pe WhatsApp 💬
+            <span>💬</span> Revendică Premiul
         </button>
 
         <button class="primary-btn" style="background-color: #555; font-size: 0.8rem; padding: 10px 20px;" onclick="restartGame()">Mai joacă o dată</button>
@@ -296,20 +242,18 @@
         let gameActive = false;
         let isPaused = false;
         let spawnInterval;
+        let confettiInterval; // Variabila pentru confetti
         let letterFound = false; 
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
-        
-        // --- CONFIGURARE DATA REVENIRII ---
-        // Aici pui data cand se intoarce. Am pus un default: Azi + 3 zile la ora 19:00
-        const now = new Date();
-        const returnDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 19, 0, 0); 
-        // Daca vrei o data fixa, sterge linia de sus si decomenteaza linia de jos:
-        // const returnDate = new Date("Feb 25, 2024 18:00:00"); 
+
+        // --- DATA REVENIRII: DUMINICA, 8 FEBRUARIE 2026 ---
+        // Luna 1 este Februarie (0=Ian, 1=Feb)
+        const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
         window.onload = function() {
-            createFireflies(); // Pornim licuricii
+            createFireflies(); 
             const texts = ["Se încarcă aerul curat...", "Se alungă țânțarii...", "Se pregătește masajul...", "Gata de aventură!"];
             let i = 0;
             const interval = setInterval(() => {
@@ -322,8 +266,8 @@
                 }
             }, 800);
             
-            // Pornim countdown-ul
             setInterval(updateCountdown, 1000);
+            updateCountdown(); // Apel initial
         };
 
         const targetScore = 30; 
@@ -331,9 +275,20 @@
         function startGame() {
             score = 0; updateScore(0);
             gameActive = true; isPaused = false; letterFound = false;
-            startScreen.classList.add('hidden'); endScreen.classList.add('hidden'); letterModal.classList.add('hidden');
+            
+            // RESETAM TOT
+            startScreen.classList.add('hidden'); 
+            endScreen.classList.add('hidden'); 
+            letterModal.classList.add('hidden');
+            
+            // OPRIM CONFETTI DACA MERGEAU
+            if(confettiInterval) clearInterval(confettiInterval);
+            if(window.confetti) window.confetti.reset();
+
             bgMusic.volume = 0.4; bgMusic.play().catch(e => console.log("Audio waiting"));
-            spawnInterval = setInterval(spawnLoop, 700);
+            
+            // Pornim bucla de joc
+            spawnInterval = setTimeout(spawnLoop, 700);
         }
 
         function updateScore(val) {
@@ -342,34 +297,54 @@
         }
 
         function spawnLoop() {
-            if (!gameActive || isPaused) return;
-            const rand = Math.random();
-            
-            if (!letterFound && rand < 0.03 && score > 5) { spawnEntity('💌', 'letter'); return; }
-            if (rand < 0.05) { spawnEntity('💛', 'gold'); return; }
-            if (rand < 0.03) { spawnEntity('🐻', 'bear'); return; }
-            if (rand < 0.25) {
-                const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
-                spawnEntity(badIcon, 'bad');
+            if (!gameActive) return;
+            if (isPaused) {
+                spawnInterval = setTimeout(spawnLoop, 100); // Verificam iar peste 100ms
                 return;
             }
-            const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
-            spawnEntity(goodIcon, 'good');
+
+            // --- DIFICULTATE PROGRESIVA ---
+            // Cu cat scorul e mai mare, cu atat vin mai repede
+            let speed = 700; // Viteza initiala
+            if(score > 10) speed = 600;
+            if(score > 20) speed = 500;
+            if(score > 25) speed = 400; // Modul turbo
+
+            const rand = Math.random();
+            
+            // Logica Spawn
+            if (!letterFound && rand < 0.03 && score > 5) spawnEntity('💌', 'letter');
+            else if (rand < 0.05) spawnEntity('💛', 'gold');
+            else if (rand < 0.04) spawnEntity('🐻', 'bear'); // URSUL
+            else if (rand < 0.25) {
+                const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
+                spawnEntity(badIcon, 'bad');
+            } else {
+                const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
+                spawnEntity(goodIcon, 'good');
+            }
+
+            // Programam urmatorul spawn
+            spawnInterval = setTimeout(spawnLoop, speed);
         }
 
         function spawnEntity(icon, type) {
             const item = document.createElement('div');
             item.classList.add('item');
             item.innerText = icon; item.dataset.type = type;
+            
             if(type === 'gold') item.classList.add('golden-item');
             if(type === 'letter') item.classList.add('letter-item');
             if(type === 'bear') item.classList.add('bear-item');
             if(type === 'bad') item.style.zIndex = "15";
 
             item.style.left = Math.random() * 80 + 10 + '%';
+            
+            // Viteza de cadere variaza si ea usor
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
-            if(type === 'bear') duration = 2;
+            if(type === 'bear') duration = 1.8; // Ursul e rapid!
+            
             item.style.animationDuration = duration + 's';
 
             const interact = (e) => {
@@ -393,6 +368,7 @@
 
         function catchItem(item, type, x, y) {
             if (!gameActive || isPaused) return;
+            
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
             
             if (type === 'gold') {
@@ -412,6 +388,7 @@
             }
             item.style.transition = "all 0.1s"; item.style.transform = "scale(1.5)"; item.style.opacity = "0";
             setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
+            
             if (score >= targetScore) endGame();
         }
 
@@ -439,36 +416,53 @@
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
             
-            countdownTimer.innerText = `${days}z ${hours}h ${minutes}m`;
+            countdownTimer.innerText = `${days}z ${hours}h ${minutes}m ${seconds}s`;
         }
 
         function openLetter() { isPaused = true; document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused'); letterModal.classList.remove('hidden'); }
         function closeLetter() { letterModal.classList.add('hidden'); isPaused = false; document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running'); }
+        
         function showFloatingText(x, y, text, color) {
             const msg = document.createElement('div'); msg.classList.add('floating-msg');
             msg.innerText = text; msg.style.color = color;
             msg.style.left = (x - 20) + 'px'; msg.style.top = (y - 50) + 'px';
             gameContainer.appendChild(msg); setTimeout(() => msg.remove(), 1000);
         }
+        
         function endGame() {
-            gameActive = false; clearInterval(spawnInterval);
+            gameActive = false; 
+            if(spawnInterval) clearTimeout(spawnInterval); // Oprim generarea
+            
             document.querySelectorAll('.item').forEach(el => el.remove());
-            setTimeout(() => { endScreen.classList.remove('hidden'); triggerConfetti(); }, 300);
+            setTimeout(() => { 
+                endScreen.classList.remove('hidden'); 
+                triggerConfetti(); 
+            }, 300);
         }
+        
         function sendWhatsapp() {
             let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶 (Și m-am ferit de urși!)";
             let encodedText = encodeURIComponent(text);
             window.open(`https://wa.me/?text=${encodedText}`, '_blank');
         }
+        
         function triggerConfetti() {
             var duration = 3000; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
-            var interval = setInterval(function() {
-              var timeLeft = (Date.now() + 3000) - Date.now();
-              if (timeLeft <= 0) return clearInterval(interval);
+            
+            // Oprim intervalul vechi daca exista
+            if(confettiInterval) clearInterval(confettiInterval);
+
+            var animationEnd = Date.now() + duration;
+
+            confettiInterval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+              if (timeLeft <= 0) return clearInterval(confettiInterval);
               confetti(Object.assign({}, defaults, { particleCount: 50, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
         }
+        
         function restartGame() { startGame(); }
     </script>
 </body>
