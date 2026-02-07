@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pentru Ioana - Valea Doftanei</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
@@ -12,22 +12,23 @@
             padding: 0;
             overflow: hidden;
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #228B22 100%);
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 40%, #228B22 100%);
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            touch-action: none; /* Previne zoom-ul pe mobil */
+            touch-action: none; /* Esențial pentru mobil */
         }
 
         h1 {
             font-family: 'Pacifico', cursive;
             color: #2c3e50;
             text-shadow: 2px 2px white;
-            margin-top: 20px;
-            font-size: 1.8rem;
+            margin-top: 15px;
+            font-size: 1.6rem;
             z-index: 10;
             text-align: center;
+            pointer-events: none;
         }
 
         #game-container {
@@ -41,39 +42,52 @@
             position: absolute;
             top: 10px;
             right: 20px;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #fff;
-            background: rgba(0, 100, 0, 0.7);
-            padding: 10px 20px;
+            background: rgba(0, 100, 0, 0.8);
+            padding: 8px 15px;
             border-radius: 20px;
             z-index: 20;
+            pointer-events: none;
         }
 
         .item {
             position: absolute;
-            font-size: 3rem;
+            font-size: 3.5rem;
             cursor: pointer;
             user-select: none;
             animation: fall linear forwards;
-            top: -50px;
+            top: -80px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Animația de cădere */
         @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        /* Ecranele de Start și Final */
+        /* Efect de tremurat când prinde ploaia */
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Ecranele Modale */
         .modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85); /* Puțin mai întunecat */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -83,18 +97,37 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            backdrop-filter: blur(5px);
         }
 
         .modal h2 {
             font-family: 'Pacifico', cursive;
             font-size: 2.5rem;
             color: #90EE90;
+            margin-bottom: 10px;
+        }
+
+        /* Stil pentru Poza Finală */
+        #final-photo {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         button {
             background-color: #ff6b6b;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             font-size: 1.2rem;
             color: white;
             border-radius: 50px;
@@ -106,22 +139,16 @@
             margin-top: 20px;
         }
 
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #message {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            max-width: 600px;
-        }
+        button:active { transform: scale(0.95); }
+        .hidden { display: none !important; }
+        p { line-height: 1.5; font-size: 1.1rem; }
     </style>
 </head>
 <body>
+
+    <audio id="bg-music" loop>
+        <source src="https://actions.google.com/sounds/v1/ambiences/forest_morning.ogg" type="audio/ogg">
+    </audio>
 
     <h1>🌲 Pădurea Ioanei 🌲</h1>
     
@@ -131,14 +158,20 @@
 
     <div id="start-screen" class="modal">
         <h2>Salut, Ioana!</h2>
-        <p id="message">Ești la Valea Doftanei? <br>Hai să adunăm câțiva brazi și plante pentru colecția ta virtuală!</p>
-        <button onclick="startGame()">Începe vacanța!</button>
+        <p>Ești gata de o plimbare virtuală prin Valea Doftanei?</p>
+        <p style="font-size: 0.9rem; color: #ddd;">
+            🌱 Prinde brazii și florile.<br>
+            🌧️ Ferește-te de norii de ploaie!
+        </p>
+        <button onclick="startGame()">Începe Aventură!</button>
     </div>
 
     <div id="end-screen" class="modal hidden">
-        <h2>Bravooo! 🌿</h2>
+        <img id="final-photo" src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop" alt="Noi doi">
+        
+        <h2>Bravooo! ❤️</h2>
         <p>Ai strâns o colecție superbă!</p>
-        <p>Distracție plăcută în continuare la aer curat! ❤️</p>
+        <p>Distracție plăcută în continuare și te aștept acasă!</p>
         <button onclick="restartGame()">Mai joacă o dată</button>
     </div>
 
@@ -147,24 +180,40 @@
         const scoreBoard = document.getElementById('score-board');
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
+        const bgMusic = document.getElementById('bg-music');
         
         let score = 0;
         let gameActive = false;
         let spawnInterval;
         
-        // Elementele care vor cădea (Brazi, Conuri, Flori, Frunze)
-        const items = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '🍃'];
-        const targetScore = 20; // Câte puncte trebuie să facă
+        // Configurație Elemente
+        const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '🏔️'];
+        const badItems = ['🌧️', '⛈️', '🦟']; // Ploaie, Furtună, Țânțari :)
+        
+        const targetScore = 20; // Scor țintă pentru câștig
 
         function startGame() {
+            // Resetare variabile
             score = 0;
-            scoreBoard.innerText = 'Scor: ' + score;
+            updateScore(0);
             gameActive = true;
+            
+            // Ascundem UI Start / Final
             startScreen.classList.add('hidden');
             endScreen.classList.add('hidden');
+
+            // 🎵 Pornim Muzica (Browserul permite doar după interacțiune)
+            bgMusic.volume = 0.5; // Volum la 50%
+            bgMusic.play().catch(e => console.log("Audio play failed:", e));
             
-            // Începem să generăm elemente
-            spawnInterval = setInterval(spawnItem, 800);
+            // Start generare elemente
+            spawnInterval = setInterval(spawnItem, 750); // La fiecare 0.75 secunde
+        }
+
+        function updateScore(val) {
+            score += val;
+            if(score < 0) score = 0; // Nu mergem pe minus
+            scoreBoard.innerText = 'Scor: ' + score + ' / ' + targetScore;
         }
 
         function spawnItem() {
@@ -173,45 +222,70 @@
             const item = document.createElement('div');
             item.classList.add('item');
             
-            // Alegem un emoji random
-            item.innerText = items[Math.floor(Math.random() * items.length)];
+            // 25% șanse să fie "rău", 75% șanse să fie "bun"
+            const isBad = Math.random() < 0.25; 
+
+            if (isBad) {
+                item.innerText = badItems[Math.floor(Math.random() * badItems.length)];
+                item.dataset.type = 'bad';
+                item.style.zIndex = "15"; // Norii apar puțin peste brazi
+            } else {
+                item.innerText = goodItems[Math.floor(Math.random() * goodItems.length)];
+                item.dataset.type = 'good';
+            }
             
-            // Poziție orizontală random (între 10% și 90% din ecran)
-            item.style.left = Math.random() * 80 + 10 + '%';
+            // Poziționare random pe orizontală
+            item.style.left = Math.random() * 85 + 5 + '%';
             
-            // Viteza de cădere random (între 3s și 6s)
-            const duration = Math.random() * 3 + 3;
+            // Viteză random
+            const duration = Math.random() * 2 + 3; // Între 3s și 5s
             item.style.animationDuration = duration + 's';
 
-            // Interacțiunea (Click / Touch)
-            item.addEventListener('click', () => catchItem(item));
-            item.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Previne dublul click pe mobil
+            // Touch & Click Events
+            const interact = (e) => {
+                e.preventDefault(); 
+                e.stopPropagation(); // Previne click-ul să treacă prin elemente
                 catchItem(item);
-            });
+            };
+
+            item.addEventListener('touchstart', interact, {passive: false});
+            item.addEventListener('mousedown', interact);
 
             gameContainer.appendChild(item);
 
-            // Ștergem elementul dacă ajunge jos
+            // Cleanup automat când iese din ecran
             setTimeout(() => {
-                if (item.parentNode) {
-                    item.remove();
-                }
+                if (item.parentNode) item.remove();
             }, duration * 1000);
         }
 
         function catchItem(element) {
             if (!gameActive) return;
             
-            // Creștem scorul
-            score++;
-            scoreBoard.innerText = 'Scor: ' + score;
-            
-            // Efect vizual simplu (mărire și dispariție)
-            element.style.transition = "transform 0.1s, opacity 0.1s";
-            element.style.transform = "scale(1.5)";
-            element.style.opacity = "0";
-            
+            // Verificăm tipul elementului
+            if (element.dataset.type === 'bad') {
+                // 🌧️ A prins ploaia
+                updateScore(-2);
+                
+                // Feedback vizual negativ
+                document.body.classList.add('shake');
+                element.innerText = "❌"; // Se transformă în X
+                setTimeout(() => document.body.classList.remove('shake'), 500);
+                
+                // Mică vibrație pe telefon (dacă suportă)
+                if (navigator.vibrate) navigator.vibrate(200);
+
+            } else {
+                // 🌲 A prins ceva bun
+                updateScore(1);
+                
+                // Feedback vizual pozitiv
+                element.style.transition = "all 0.1s";
+                element.style.transform = "scale(1.5)";
+                element.style.opacity = "0";
+            }
+
+            // Ștergem elementul cu o mică întârziere pt animație
             setTimeout(() => {
                 if(element.parentNode) element.remove();
             }, 100);
@@ -225,11 +299,15 @@
         function endGame() {
             gameActive = false;
             clearInterval(spawnInterval);
-            // Curățăm ecranul de elemente rămase
+            
+            // Curățăm ecranul
             document.querySelectorAll('.item').forEach(el => el.remove());
             
+            // Afișăm ecranul de final
             setTimeout(() => {
                 endScreen.classList.remove('hidden');
+                // Opțional: Oprim muzica sau o lăsăm
+                // bgMusic.pause(); 
             }, 500);
         }
 
