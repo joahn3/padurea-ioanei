@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pentru Ioana - Valea Doftanei</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
 
@@ -17,7 +19,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            touch-action: none; /* Esențial pentru mobil */
+            touch-action: none; 
+            user-select: none;
         }
 
         h1 {
@@ -27,7 +30,6 @@
             margin-top: 15px;
             font-size: 1.6rem;
             z-index: 10;
-            text-align: center;
             pointer-events: none;
         }
 
@@ -50,44 +52,55 @@
             border-radius: 20px;
             z-index: 20;
             pointer-events: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .item {
             position: absolute;
             font-size: 3.5rem;
             cursor: pointer;
-            user-select: none;
             animation: fall linear forwards;
             top: -80px;
             -webkit-tap-highlight-color: transparent;
+            z-index: 5;
         }
 
-        /* Animația de cădere */
+        /* Stil pentru mesajele plutitoare (Te iubesc, etc) */
+        .floating-msg {
+            position: absolute;
+            font-weight: bold;
+            color: #ff4757;
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 50;
+            text-shadow: 1px 1px 0 #fff;
+            animation: floatUp 1s ease-out forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+        }
+
         @keyframes fall {
             to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        /* Efect de tremurat când prinde ploaia */
-        .shake {
-            animation: shake 0.5s;
-        }
-
+        .shake { animation: shake 0.5s; }
         @keyframes shake {
-            0% { transform: translateX(0); }
+            0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
+            75% { transform: translateX(10px); }
         }
 
-        /* Ecranele Modale */
         .modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85); /* Puțin mai întunecat */
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -102,15 +115,14 @@
 
         .modal h2 {
             font-family: 'Pacifico', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             color: #90EE90;
             margin-bottom: 10px;
         }
 
-        /* Stil pentru Poza Finală */
         #final-photo {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             object-fit: cover;
             border-radius: 50%;
             border: 4px solid white;
@@ -158,20 +170,20 @@
 
     <div id="start-screen" class="modal">
         <h2>Salut, Ioana!</h2>
-        <p>Ești gata de o plimbare virtuală prin Valea Doftanei?</p>
-        <p style="font-size: 0.9rem; color: #ddd;">
-            🌱 Prinde brazii și florile.<br>
-            🌧️ Ferește-te de norii de ploaie!
+        <p>Am auzit că îți place la Valea Doftanei! 🏔️<br>Hai să adunăm puțină natură.</p>
+        <p style="font-size: 0.9rem; color: #ddd; margin-top: 20px;">
+            ❤️ Prinde tot ce e frumos.<br>
+            ⛈️ Ferește-te de ploaie!
         </p>
-        <button onclick="startGame()">Începe Aventură!</button>
+        <button onclick="startGame()">Start Vacanță!</button>
     </div>
 
     <div id="end-screen" class="modal hidden">
-        <img id="final-photo" src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop" alt="Noi doi">
+        <img id="final-photo" src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=600&auto=format&fit=crop" alt="Final">
         
-        <h2>Bravooo! ❤️</h2>
+        <h2>Yeeey! ❤️</h2>
         <p>Ai strâns o colecție superbă!</p>
-        <p>Distracție plăcută în continuare și te aștept acasă!</p>
+        <p>Te pup, mi-e dor de tine și distracție plăcută!</p>
         <button onclick="restartGame()">Mai joacă o dată</button>
     </div>
 
@@ -186,33 +198,38 @@
         let gameActive = false;
         let spawnInterval;
         
-        // Configurație Elemente
-        const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '🏔️'];
-        const badItems = ['🌧️', '⛈️', '🦟']; // Ploaie, Furtună, Țânțari :)
+        const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
+        const badItems = ['🌧️', '⛈️', '🦟'];
         
-        const targetScore = 20; // Scor țintă pentru câștig
+        // ❤️ LISTA DE MESAJE DE DRAGOSTE/SIMPATICE
+        const loveMessages = [
+            "Te iubesc! ❤️", 
+            "Mi-e dor! 🤗", 
+            "Ești super! ✨", 
+            "Frumoaso! 😍", 
+            "Pupici! 😘", 
+            "Aer curat! 🍃", 
+            "Relaxare! 🧘‍♀️"
+        ];
+
+        const targetScore = 20;
 
         function startGame() {
-            // Resetare variabile
             score = 0;
             updateScore(0);
             gameActive = true;
-            
-            // Ascundem UI Start / Final
             startScreen.classList.add('hidden');
             endScreen.classList.add('hidden');
 
-            // 🎵 Pornim Muzica (Browserul permite doar după interacțiune)
-            bgMusic.volume = 0.5; // Volum la 50%
-            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            bgMusic.volume = 0.4;
+            bgMusic.play().catch(e => console.log("Audio needed user interaction first"));
             
-            // Start generare elemente
-            spawnInterval = setInterval(spawnItem, 750); // La fiecare 0.75 secunde
+            spawnInterval = setInterval(spawnItem, 750);
         }
 
         function updateScore(val) {
             score += val;
-            if(score < 0) score = 0; // Nu mergem pe minus
+            if(score < 0) score = 0;
             scoreBoard.innerText = 'Scor: ' + score + ' / ' + targetScore;
         }
 
@@ -222,30 +239,35 @@
             const item = document.createElement('div');
             item.classList.add('item');
             
-            // 25% șanse să fie "rău", 75% șanse să fie "bun"
             const isBad = Math.random() < 0.25; 
 
             if (isBad) {
                 item.innerText = badItems[Math.floor(Math.random() * badItems.length)];
                 item.dataset.type = 'bad';
-                item.style.zIndex = "15"; // Norii apar puțin peste brazi
+                item.style.zIndex = "15";
             } else {
                 item.innerText = goodItems[Math.floor(Math.random() * goodItems.length)];
                 item.dataset.type = 'good';
             }
             
-            // Poziționare random pe orizontală
             item.style.left = Math.random() * 85 + 5 + '%';
-            
-            // Viteză random
-            const duration = Math.random() * 2 + 3; // Între 3s și 5s
+            const duration = Math.random() * 2 + 3;
             item.style.animationDuration = duration + 's';
 
-            // Touch & Click Events
             const interact = (e) => {
                 e.preventDefault(); 
-                e.stopPropagation(); // Previne click-ul să treacă prin elemente
-                catchItem(item);
+                e.stopPropagation();
+                // Luăm coordonatele click-ului pentru a afișa mesajul fix acolo
+                let x = e.clientX; 
+                let y = e.clientY;
+                
+                // Dacă e touch, luăm coordonatele primului deget
+                if(e.touches && e.touches.length > 0) {
+                    x = e.touches[0].clientX;
+                    y = e.touches[0].clientY;
+                }
+
+                catchItem(item, x, y);
             };
 
             item.addEventListener('touchstart', interact, {passive: false});
@@ -253,62 +275,90 @@
 
             gameContainer.appendChild(item);
 
-            // Cleanup automat când iese din ecran
             setTimeout(() => {
                 if (item.parentNode) item.remove();
             }, duration * 1000);
         }
 
-        function catchItem(element) {
+        function catchItem(element, x, y) {
             if (!gameActive) return;
             
-            // Verificăm tipul elementului
             if (element.dataset.type === 'bad') {
-                // 🌧️ A prins ploaia
-                updateScore(-2);
-                
-                // Feedback vizual negativ
+                updateScore(-3); // Penalizare mai mare
                 document.body.classList.add('shake');
-                element.innerText = "❌"; // Se transformă în X
+                element.innerText = "❌";
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-                
-                // Mică vibrație pe telefon (dacă suportă)
                 if (navigator.vibrate) navigator.vibrate(200);
-
             } else {
-                // 🌲 A prins ceva bun
                 updateScore(1);
                 
-                // Feedback vizual pozitiv
+                // Afișăm Mesaj Plutitor (Love Message)
+                showFloatingText(x, y);
+
                 element.style.transition = "all 0.1s";
                 element.style.transform = "scale(1.5)";
                 element.style.opacity = "0";
             }
 
-            // Ștergem elementul cu o mică întârziere pt animație
-            setTimeout(() => {
-                if(element.parentNode) element.remove();
-            }, 100);
+            setTimeout(() => { if(element.parentNode) element.remove(); }, 100);
 
-            // Verificăm dacă a câștigat
             if (score >= targetScore) {
                 endGame();
             }
         }
 
+        // Funcția nouă pentru mesaje
+        function showFloatingText(x, y) {
+            const msg = document.createElement('div');
+            msg.classList.add('floating-msg');
+            // Alege un mesaj random
+            msg.innerText = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+            
+            // Poziționare (cu puțin offset să nu fie sub deget)
+            msg.style.left = (x - 20) + 'px';
+            msg.style.top = (y - 50) + 'px';
+            
+            gameContainer.appendChild(msg);
+
+            // Dispare singur după animație (1 secundă)
+            setTimeout(() => {
+                msg.remove();
+            }, 1000);
+        }
+
         function endGame() {
             gameActive = false;
             clearInterval(spawnInterval);
-            
-            // Curățăm ecranul
             document.querySelectorAll('.item').forEach(el => el.remove());
             
-            // Afișăm ecranul de final
             setTimeout(() => {
                 endScreen.classList.remove('hidden');
-                // Opțional: Oprim muzica sau o lăsăm
-                // bgMusic.pause(); 
-            }, 500);
+                triggerConfetti(); // 🎉 CONFETTI !!!
+            }, 300);
+        }
+
+        function triggerConfetti() {
+            // Efect simplu de confetti folosind libraria importată sus
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
+
+            var random = function(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              // Artificii din stânga și dreapta
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
 
         function restartGame() {
