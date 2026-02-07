@@ -22,16 +22,16 @@
             display: flex; flex-direction: column; align-items: center;
             touch-action: none; user-select: none;
             background-color: #2c3e50;
-            transition: background-color 1s ease;
+            transition: background-color 2s ease;
         }
 
-        /* FUNDALURI */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
             background-size: cover; z-index: -3;
             animation: zoomBg 40s alternate infinite linear;
         }
+        
         .sunset-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(255, 140, 0, 0.6), rgba(128, 0, 128, 0.5));
@@ -44,7 +44,7 @@
             z-index: -1; pointer-events: none; opacity: 0;
             transition: opacity 3s ease;
         }
-        .love-overlay { /* NOU: Strat pt Bonus */
+        .love-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(255, 105, 180, 0.4), rgba(255, 20, 147, 0.6));
             z-index: -1; pointer-events: none; opacity: 0;
@@ -56,7 +56,20 @@
             z-index: 0; pointer-events: none;
         }
 
-        /* MILESTONE & BONUS TEXT */
+        /* PLOAIE (RAIN EFFECT) */
+        .rain-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; overflow: hidden; opacity: 0; transition: opacity 1s;
+        }
+        .rain-active .rain-container { opacity: 1; }
+        .raindrop {
+            position: absolute; width: 2px; height: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            top: -20px; animation: rainFall linear infinite;
+        }
+        @keyframes rainFall { to { transform: translateY(110vh); } }
+
+        /* MILESTONE TOAST */
         #milestone-toast {
             position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
             background: rgba(255, 255, 255, 0.95); color: #333;
@@ -67,7 +80,6 @@
         }
         #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Urma degete */
         .trail-dot {
             position: absolute; width: 8px; height: 8px;
             background: radial-gradient(circle, #fff 30%, #ffd700 100%);
@@ -77,11 +89,9 @@
         }
         @keyframes fadeTrail { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.2); opacity: 0; } }
 
-        /* SCUT */
         .shield-active { box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff; animation: pulseShield 1s infinite alternate; }
         @keyframes pulseShield { 0% { box-shadow: inset 0 0 30px #00BFFF; } 100% { box-shadow: inset 0 0 60px #00BFFF, inset 0 0 20px #fff; } }
 
-        /* LOVE MODE (BONUS) */
         .love-active h1 { text-shadow: 0 0 20px #ff69b4; transform: scale(1.1); }
         
         .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out; }
@@ -185,7 +195,7 @@
         .golden-item { font-size: 4rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; }
         .cheese-item { font-size: 4.2rem !important; filter: drop-shadow(0 0 15px orange); z-index: 21 !important; }
         .umbrella-item { font-size: 4rem !important; filter: drop-shadow(0 0 15px #00BFFF); z-index: 21 !important; }
-        .cloud-item { font-size: 4.5rem !important; filter: drop-shadow(0 0 20px #ff69b4); z-index: 22 !important; } /* NOU */
+        .cloud-item { font-size: 4.5rem !important; filter: drop-shadow(0 0 20px #ff69b4); z-index: 22 !important; } 
         .letter-item { font-size: 3.8rem !important; filter: drop-shadow(0 0 15px white); z-index: 25 !important; animation: fall linear forwards !important;}
         .bear-item { font-size: 4.5rem !important; z-index: 18 !important; filter: drop-shadow(0 0 20px red); }
 
@@ -215,11 +225,16 @@
             border: 2px solid #DAA520; position: relative; overflow: hidden;
         }
         .voucher-card h2 { color: #ff4757; font-family: 'Pacifico'; font-size: 1.5rem; margin: 10px 0; line-height: 1.3; }
-        .voucher-card::before {
-            content: "VIP PASS"; position: absolute; bottom: 5px; right: 5px;
-            font-weight: bold; color: rgba(218, 165, 32, 0.3); border: 3px solid rgba(218, 165, 32, 0.3);
-            padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem; pointer-events: none;
+        
+        /* RANKING BADGES */
+        .rank-badge { 
+            position: absolute; bottom: 5px; right: 5px;
+            font-weight: bold; padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem; pointer-events: none;
+            border-radius: 5px; text-transform: uppercase;
         }
+        .rank-silver { color: #7f8c8d; border: 3px solid #7f8c8d; }
+        .rank-gold { color: #DAA520; border: 3px solid #DAA520; }
+        .rank-platinum { color: #8e44ad; border: 3px solid #8e44ad; box-shadow: 0 0 10px #8e44ad; }
 
         #countdown-timer { font-size: 1.4rem; font-weight: bold; color: #76ff03; font-family: monospace; letter-spacing: 1px; text-shadow: 0 0 15px rgba(118, 255, 3, 0.6); }
 
@@ -263,7 +278,7 @@
         .stat-val { font-weight: bold; font-size: 1.1rem; color: #ffd700; display: block; }
 
         /* Pause State */
-        body.game-paused .item, body.game-paused .bg-layer, body.game-paused .bird, body.game-paused .firefly { animation-play-state: paused !important; }
+        body.game-paused .item, body.game-paused .bg-layer, body.game-paused .bird, body.game-paused .firefly, body.game-paused .raindrop { animation-play-state: paused !important; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -274,9 +289,10 @@
     </audio>
 
     <div class="bg-layer"></div>
-    <div class="sunset-overlay" id="sunset-overlay"></div>
+    <div class="rain-container" id="rain-container"></div> <div class="sunset-overlay" id="sunset-overlay"></div>
     <div class="night-overlay" id="night-overlay"></div>
-    <div class="love-overlay" id="love-overlay"></div> <div class="overlay"></div>
+    <div class="love-overlay" id="love-overlay"></div>
+    <div class="overlay"></div>
     
     <div id="damage-overlay"></div>
     <div id="milestone-toast">Super!</div>
@@ -321,9 +337,9 @@
             <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.85rem; line-height:1.6;">
                 🌲 <b>Natură:</b> +1 punct<br>
                 💛 <b>Inima:</b> +5 puncte<br>
-                ☁️ <b>Norul Roz:</b> FURTUNA DE IUBIRE!<br>
                 🧀 <b>Cașcavea:</b> +10 (Super Rară!)<br>
                 ☔ <b>Umbrela:</b> Scut Magic 5s<br>
+                🌧️ <b>Ploaie / 🦟 Țânțari:</b> -2 puncte<br>
                 🐻 <b>URȘI:</b> -5 puncte (Fugi!)<br>
                 💌 <b>Plic Secret:</b> Deschide-l!
             </div>
@@ -342,9 +358,10 @@
     <div id="end-screen" class="modal hidden">
         <div class="modal-content">
             <div class="voucher-card">
-                <h3 style="color: #DAA520; margin:0; font-size:1.1rem;">🎫 VOUCHER GOLD</h3>
+                <h3 id="voucher-title" style="color: #DAA520; margin:0; font-size:1.1rem;">🎫 VOUCHER GOLD</h3>
                 <p style="margin:5px 0; color:#555; font-size:0.8rem;">Valabil pentru titular:</p>
-                <h2 style="color: #ff4757; font-family: 'Pacifico';">Un Masaj VIP la Tălpi 🦶</h2>
+                <h2 id="voucher-prize" style="color: #ff4757; font-family: 'Pacifico';">Un Masaj VIP la Tălpi 🦶</h2>
+                <div id="rank-badge" class="rank-badge rank-gold">GOLD</div>
                 <p style="font-size:0.7rem; color:#aaa; margin-top:5px;">Serie Unică: LOVE-2026</p>
             </div>
             
@@ -391,6 +408,9 @@
         const statCheese = document.getElementById('stat-cheese');
         const greetingText = document.getElementById('greeting-text');
         const milestoneToast = document.getElementById('milestone-toast');
+        const rainContainer = document.getElementById('rain-container');
+        const voucherTitle = document.getElementById('voucher-title');
+        const rankBadge = document.getElementById('rank-badge');
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
@@ -409,7 +429,7 @@
         let prizeUnlocked = false;
         let cheatClicks = 0;
         let isShielded = false;
-        let isBonusRound = false; // NOU
+        let isBonusRound = false;
         let typewriterTimeout;
         let bearsAvoided = 0;
         let cheeseCollected = 0;
@@ -417,7 +437,9 @@
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         const thoughts = ["Mi-e dor de tine...", "Ești minunată...", "Te iubesc! ❤️", "Valea Doftanei e mai frumoasă cu tine...", "Abia aștept să te văd!", "Relaxează-te..."];
+        
         const fullLetterText = "Hey, Ioana! 🌲<br><br>Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>Distracție plăcută în continuare, mănâncă ceva bun (poate o cașcavea?) și... <b>ai grijă la urși!</b> 🐻<br><br>Te pupă,<br><b>Ionuț</b>";
+
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -455,6 +477,7 @@
             setSmartGreeting();
             createFireflies(); 
             createStars();
+            createRainDrops(); // Pre-generam picaturile
             highScoreEl.innerText = "Record: " + bestScore;
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             bgMusic.muted = isMuted;
@@ -543,6 +566,7 @@
             document.body.classList.remove('shield-active');
             document.body.classList.remove('game-paused');
             document.body.classList.remove('love-active');
+            document.body.classList.remove('rain-active'); // Stop rain
             pauseBtn.innerText = "⏸️";
 
             if(!prizePersistent) {
@@ -616,8 +640,6 @@
             loveOverlay.style.opacity = 1;
             showMilestone("FURTUNA DE IUBIRE! ❤️");
             playTone(800, 'sine', 1.0);
-            
-            // Muzica mai rapida (simulat)
             bgMusic.playbackRate = 1.2;
 
             setTimeout(() => {
@@ -625,7 +647,6 @@
                 document.body.classList.remove('love-active');
                 loveOverlay.style.opacity = 0;
                 bgMusic.playbackRate = 1.0;
-                // Revenim la normal (actualizam backgroundul in functie de scor)
                 updateScore(0);
             }, 10000);
         }
@@ -652,10 +673,9 @@
             if (!gameActive) return;
             if (isUserPaused || isSystemPaused) { spawnInterval = setTimeout(spawnLoop, 500); return; }
 
-            // MOD BONUS: SPAWN DOAR INIMI RAPID
             if (isBonusRound) {
-                spawnEntity('❤️', 'gold'); // Inimile de aur dau 5 puncte!
-                spawnInterval = setTimeout(spawnLoop, 300); // Foarte rapid
+                spawnEntity('❤️', 'gold'); 
+                spawnInterval = setTimeout(spawnLoop, 300); 
                 return;
             }
 
@@ -666,11 +686,11 @@
             if(score > 50) speed = 400;
 
             const rand = Math.random();
-            
             if(score < 20 && Math.random() < 0.05) spawnBird();
 
+            // LOGICA SPAWN
             if (!letterFound && rand < 0.15 && score > 1) spawnEntity('💌', 'letter');
-            else if (rand < 0.02) spawnEntity('☁️', 'cloud'); // BONUS ROUND (RAR)
+            else if (rand < 0.02) spawnEntity('☁️', 'cloud'); 
             else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
             else if (rand < 0.04) spawnEntity('🧀', 'cheese'); 
             else if (rand < 0.05) spawnEntity('💛', 'gold');
@@ -723,7 +743,7 @@
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
             if(type === 'cheese' || type === 'umbrella') duration = 2.2;
-            if(type === 'cloud') duration = 3.5; // Norul pluteste lent
+            if(type === 'cloud') duration = 3.5; 
             if(type === 'bear') duration = 2.0; 
             
             item.style.animationDuration = duration + 's';
@@ -738,6 +758,12 @@
             item.addEventListener('mousedown', interact);
             gameContainer.appendChild(item);
 
+            // Trigger Visual Rain if bad item spawns
+            if(type === 'bad') {
+                document.body.classList.add('rain-active');
+                setTimeout(() => document.body.classList.remove('rain-active'), duration * 1000);
+            }
+
             let lifeTime = duration * 1000;
             let checkInterval = setInterval(() => {
                 if(isUserPaused || isSystemPaused) return; 
@@ -747,6 +773,17 @@
                     comboCount = 0; clearInterval(checkInterval); 
                 }
             }, 100);
+        }
+
+        function createRainDrops() {
+            for(let i=0; i<30; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('raindrop');
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                drop.style.animationDelay = Math.random() + 's';
+                rainContainer.appendChild(drop);
+            }
         }
 
         function activateShield() {
@@ -782,53 +819,37 @@
             let comboText = "";
             if(comboCount >= 3) comboText = " x" + comboCount;
 
-            if (type === 'cloud') {
-                activateBonusRound();
-            }
-            else if (type === 'umbrella') {
-                activateShield();
-                updateScore(2); 
-            }
+            if (type === 'cloud') { activateBonusRound(); }
+            else if (type === 'umbrella') { activateShield(); updateScore(2); }
             else if (type === 'cheese') {
-                cheeseCollected++;
-                updateScore(10); 
-                playTone(800, 'triangle', 0.2); 
+                cheeseCollected++; updateScore(10); playTone(800, 'triangle', 0.2); 
                 showFloatingText(x, y, "Mmm, Cașcavea!" + comboText, "orange");
                 if (navigator.vibrate) navigator.vibrate([100,50,100]);
             }
             else if (type === 'gold') {
-                // In bonus round punctele se dubleaza (e.g., 5 devine 10) - simplificat, lasam 5 dar vin multe
-                updateScore(5); 
-                playTone(1000, 'sine', 0.3); 
+                updateScore(5); playTone(1000, 'sine', 0.3); 
                 showFloatingText(x, y, "❤️" + comboText, "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
             } 
             else if (type === 'bear') {
                 bearsAvoided++; 
                 if(isShielded) {
-                    showFloatingText(x, y, "Respins! 🛡️", "#00BFFF");
-                    playTone(400, 'square', 0.1);
-                    item.style.transition = "transform 0.5s";
-                    item.style.transform = "translateY(-100px) rotate(360deg)";
-                    setTimeout(() => item.remove(), 500);
-                    return; 
+                    showFloatingText(x, y, "Respins! 🛡️", "#00BFFF"); playTone(400, 'square', 0.1);
+                    item.style.transition = "transform 0.5s"; item.style.transform = "translateY(-100px) rotate(360deg)";
+                    setTimeout(() => item.remove(), 500); return; 
                 }
                 updateScore(-5); triggerDamage(); 
-                if (navigator.vibrate) navigator.vibrate(500);
-                showFloatingText(x, y, "MORRR! 🐻", "red"); item.innerText = "🐾";
+                if (navigator.vibrate) navigator.vibrate(500); showFloatingText(x, y, "MORRR! 🐻", "red"); item.innerText = "🐾";
             } 
             else if (type === 'bad') {
                 if(isShielded) {
-                    showFloatingText(x, y, "Respins! 🛡️", "#00BFFF");
-                    playTone(400, 'square', 0.1);
-                    item.style.opacity = 0; 
-                    return;
+                    showFloatingText(x, y, "Respins! 🛡️", "#00BFFF"); playTone(400, 'square', 0.1);
+                    item.style.opacity = 0; return;
                 }
                 updateScore(-2); triggerDamage(); 
                 if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
-                updateScore(1); 
-                playTone(440 + (comboCount * 50), 'sine', 0.1); 
+                updateScore(1); playTone(440 + (comboCount * 50), 'sine', 0.1); 
                 const msgs = ["❤️", "Super!", "Yay!", "Bravo!"];
                 const msg = msgs[Math.floor(Math.random()*msgs.length)] + (comboCount > 2 ? comboText : "");
                 showFloatingText(x, y, msg, "#ff4757");
@@ -941,6 +962,7 @@
             gameActive = false; 
             if(spawnInterval) clearTimeout(spawnInterval); 
             if(thoughtInterval) clearInterval(thoughtInterval);
+            document.body.classList.remove('rain-active');
             
             if(score > bestScore) {
                 bestScore = score;
@@ -950,6 +972,25 @@
             
             statBears.innerText = bearsAvoided;
             statCheese.innerText = cheeseCollected;
+
+            // DYNAMIC VOUCHER RANK
+            rankBadge.className = 'rank-badge'; // Reset
+            if(score < 20) {
+                voucherTitle.innerText = "🎫 VOUCHER SILVER";
+                voucherTitle.style.color = "#bdc3c7";
+                rankBadge.innerText = "SILVER";
+                rankBadge.classList.add('rank-silver');
+            } else if (score < 50) {
+                voucherTitle.innerText = "🎫 VOUCHER GOLD";
+                voucherTitle.style.color = "#DAA520";
+                rankBadge.innerText = "GOLD";
+                rankBadge.classList.add('rank-gold');
+            } else {
+                voucherTitle.innerText = "💎 VOUCHER PLATINUM";
+                voucherTitle.style.color = "#8e44ad";
+                rankBadge.innerText = "PLATINUM";
+                rankBadge.classList.add('rank-platinum');
+            }
 
             document.querySelectorAll('.item').forEach(el => el.remove());
             setTimeout(() => { endScreen.classList.remove('hidden'); triggerConfetti(); }, 300);
