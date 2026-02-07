@@ -22,24 +22,16 @@
             display: flex; flex-direction: column; align-items: center;
             touch-action: none; user-select: none;
             background-color: #2c3e50;
-            transition: background-color 2s ease;
+            transition: background-color 1s ease;
         }
 
-        /* PAUSE STATE - INGREATA TOATE ANIMATIILE */
-        body.game-paused .item, 
-        body.game-paused .bg-layer, 
-        body.game-paused .bird,
-        body.game-paused .firefly {
-            animation-play-state: paused !important;
-        }
-
+        /* FUNDALURI */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
             background-size: cover; z-index: -3;
             animation: zoomBg 40s alternate infinite linear;
         }
-        
         .sunset-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(255, 140, 0, 0.6), rgba(128, 0, 128, 0.5));
@@ -52,18 +44,30 @@
             z-index: -1; pointer-events: none; opacity: 0;
             transition: opacity 3s ease;
         }
+        .love-overlay { /* NOU: Strat pt Bonus */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 105, 180, 0.4), rgba(255, 20, 147, 0.6));
+            z-index: -1; pointer-events: none; opacity: 0;
+            transition: opacity 0.5s ease; mix-blend-mode: screen;
+        }
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
             z-index: 0; pointer-events: none;
         }
 
-        .star {
-            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
-            z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out;
+        /* MILESTONE & BONUS TEXT */
+        #milestone-toast {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: rgba(255, 255, 255, 0.95); color: #333;
+            padding: 10px 25px; border-radius: 30px; font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 80;
+            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b; font-size: 1.2rem;
         }
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+        /* Urma degete */
         .trail-dot {
             position: absolute; width: 8px; height: 8px;
             background: radial-gradient(circle, #fff 30%, #ffd700 100%);
@@ -72,6 +76,16 @@
             animation: fadeTrail 0.6s linear forwards;
         }
         @keyframes fadeTrail { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.2); opacity: 0; } }
+
+        /* SCUT */
+        .shield-active { box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff; animation: pulseShield 1s infinite alternate; }
+        @keyframes pulseShield { 0% { box-shadow: inset 0 0 30px #00BFFF; } 100% { box-shadow: inset 0 0 60px #00BFFF, inset 0 0 20px #fff; } }
+
+        /* LOVE MODE (BONUS) */
+        .love-active h1 { text-shadow: 0 0 20px #ff69b4; transform: scale(1.1); }
+        
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
 
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -91,19 +105,16 @@
 
         #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; z-index: 5; }
 
-        /* HEADER BUTTONS */
         .header-btn {
             position: absolute; top: 50px;
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.3);
             color: white; font-size: 1.2rem; padding: 0; border-radius: 50%;
             width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 50; backdrop-filter: blur(5px);
-            transition: transform 0.1s;
+            cursor: pointer; z-index: 50; backdrop-filter: blur(5px); transition: transform 0.1s;
         }
         .header-btn:active { transform: scale(0.9); }
-
         #sound-toggle { left: 15px; }
-        #pause-toggle { left: 65px; } /* Langa sunet */
+        #pause-toggle { left: 65px; }
 
         #score-container {
             position: absolute; top: 50px; right: 15px;
@@ -111,8 +122,7 @@
             padding: 8px 15px; border-radius: 15px; z-index: 20;
             border: 1px solid rgba(255,255,255,0.2);
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); min-width: 100px;
-            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); min-width: 100px; cursor: pointer;
         }
         #score-label { font-size: 0.9rem; color: #fff; margin-bottom: 4px; font-weight: bold; letter-spacing: 1px; }
         #high-score { font-size: 0.7rem; color: #ffd700; margin-bottom: 5px; }
@@ -125,8 +135,7 @@
         }
 
         #claim-btn {
-            position: absolute; bottom: 40px; left: 50%; 
-            transform: translateX(-50%) scale(0);
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) scale(0);
             background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #fff; font-family: 'Pacifico', cursive; font-size: 1.2rem;
             padding: 15px 40px; border-radius: 50px; border: 4px solid #fff;
@@ -138,10 +147,8 @@
         }
         #claim-btn.visible { transform: translateX(-50%) scale(1); animation: pulseBtn 2s infinite; }
         #claim-btn.minimized {
-            bottom: auto; left: auto; transform: none; 
-            top: 125px; right: 15px; 
-            width: 40px; height: 40px; padding: 0;
-            border-radius: 50%; font-size: 1.2rem; border: 2px solid #fff; animation: none;
+            bottom: auto; left: auto; transform: none; top: 125px; right: 15px; 
+            width: 40px; height: 40px; padding: 0; border-radius: 50%; font-size: 1.2rem; border: 2px solid #fff; animation: none;
             background: rgba(255, 215, 0, 0.8); backdrop-filter: blur(5px);
         }
         #claim-btn.minimized span { display: none; }
@@ -155,7 +162,6 @@
             animation: fall linear forwards, sway 3s ease-in-out infinite alternate;
         }
         
-        /* BIRD ANIMATION */
         .bird {
             position: absolute; width: 40px; height: 40px;
             background: url('https://img.icons8.com/ios-filled/50/ffffff/bird.png');
@@ -179,6 +185,7 @@
         .golden-item { font-size: 4rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; }
         .cheese-item { font-size: 4.2rem !important; filter: drop-shadow(0 0 15px orange); z-index: 21 !important; }
         .umbrella-item { font-size: 4rem !important; filter: drop-shadow(0 0 15px #00BFFF); z-index: 21 !important; }
+        .cloud-item { font-size: 4.5rem !important; filter: drop-shadow(0 0 20px #ff69b4); z-index: 22 !important; } /* NOU */
         .letter-item { font-size: 3.8rem !important; filter: drop-shadow(0 0 15px white); z-index: 25 !important; animation: fall linear forwards !important;}
         .bear-item { font-size: 4.5rem !important; z-index: 18 !important; filter: drop-shadow(0 0 20px red); }
 
@@ -251,17 +258,12 @@
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
         
-        /* MILESTONE TOAST */
-        #milestone-toast {
-            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(255, 255, 255, 0.95); color: #333;
-            padding: 10px 25px; border-radius: 30px; font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 80;
-            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b; font-size: 1.2rem;
-        }
-        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; width: 100%; }
+        .stat-box { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px; text-align: center; font-size: 0.8rem; color: #eee; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-val { font-weight: bold; font-size: 1.1rem; color: #ffd700; display: block; }
 
+        /* Pause State */
+        body.game-paused .item, body.game-paused .bg-layer, body.game-paused .bird, body.game-paused .firefly { animation-play-state: paused !important; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -274,7 +276,7 @@
     <div class="bg-layer"></div>
     <div class="sunset-overlay" id="sunset-overlay"></div>
     <div class="night-overlay" id="night-overlay"></div>
-    <div class="overlay"></div>
+    <div class="love-overlay" id="love-overlay"></div> <div class="overlay"></div>
     
     <div id="damage-overlay"></div>
     <div id="milestone-toast">Super!</div>
@@ -319,9 +321,9 @@
             <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.85rem; line-height:1.6;">
                 🌲 <b>Natură:</b> +1 punct<br>
                 💛 <b>Inima:</b> +5 puncte<br>
+                ☁️ <b>Norul Roz:</b> FURTUNA DE IUBIRE!<br>
                 🧀 <b>Cașcavea:</b> +10 (Super Rară!)<br>
                 ☔ <b>Umbrela:</b> Scut Magic 5s<br>
-                🌧️ <b>Ploaie / 🦟 Țânțari:</b> -2 puncte<br>
                 🐻 <b>URȘI:</b> -5 puncte (Fugi!)<br>
                 💌 <b>Plic Secret:</b> Deschide-l!
             </div>
@@ -382,6 +384,7 @@
         const highScoreEl = document.getElementById('high-score');
         const sunsetOverlay = document.getElementById('sunset-overlay');
         const nightOverlay = document.getElementById('night-overlay');
+        const loveOverlay = document.getElementById('love-overlay');
         const claimBtn = document.getElementById('claim-btn');
         const typewriterEl = document.getElementById('typewriter-text');
         const statBears = document.getElementById('stat-bears');
@@ -396,8 +399,8 @@
         let isMuted = savedMute === 'true';
 
         let gameActive = false;
-        let isUserPaused = false; // Pauza de la buton
-        let isSystemPaused = false; // Pauza de la scrisoare
+        let isUserPaused = false;
+        let isSystemPaused = false;
         let spawnInterval;
         let thoughtInterval;
         let confettiInterval; 
@@ -406,21 +409,17 @@
         let prizeUnlocked = false;
         let cheatClicks = 0;
         let isShielded = false;
+        let isBonusRound = false; // NOU
         let typewriterTimeout;
-        
-        // STATS
         let bearsAvoided = 0;
         let cheeseCollected = 0;
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         const thoughts = ["Mi-e dor de tine...", "Ești minunată...", "Te iubesc! ❤️", "Valea Doftanei e mai frumoasă cu tine...", "Abia aștept să te văd!", "Relaxează-te..."];
-        
         const fullLetterText = "Hey, Ioana! 🌲<br><br>Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>Distracție plăcută în continuare, mănâncă ceva bun (poate o cașcavea?) și... <b>ai grijă la urși!</b> 🐻<br><br>Te pupă,<br><b>Ionuț</b>";
-
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
-        // AUDIO CONTEXT
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type, duration) {
              if(isMuted) return;
@@ -440,14 +439,10 @@
             else document.title = originalTitle;
         });
 
-        // TOUCH TRAIL
-        window.addEventListener('pointermove', function(e) {
-            createTrail(e.clientX, e.clientY);
-        });
-
+        window.addEventListener('pointermove', function(e) { createTrail(e.pageX, e.pageY); });
         function createTrail(x, y) {
-            const offsetX = (Math.random() - 0.5) * 20;
-            const offsetY = (Math.random() - 0.5) * 20;
+            const offsetX = (Math.random() - 0.5) * 30;
+            const offsetY = (Math.random() - 0.5) * 30;
             const dot = document.createElement('div');
             dot.classList.add('trail-dot');
             dot.style.left = (x + offsetX) + 'px';
@@ -517,12 +512,9 @@
             }
         }
 
-        // TOGGLE PAUSE
         function togglePause() {
-            if(!gameActive || isSystemPaused) return; // Nu punem pauza in timpul scrisorii
-            
+            if(!gameActive || isSystemPaused) return;
             isUserPaused = !isUserPaused;
-            
             if(isUserPaused) {
                 document.body.classList.add('game-paused');
                 pauseModal.classList.remove('hidden');
@@ -533,11 +525,10 @@
                 pauseModal.classList.add('hidden');
                 pauseBtn.innerText = "⏸️";
                 if(!isMuted) bgMusic.play();
-                spawnLoop(); // Restart loop logic
+                spawnLoop();
             }
         }
 
-        // UNLOCK AUDIO ON TOUCH
         window.addEventListener('touchstart', function() {
             if(audioCtx.state === 'suspended') audioCtx.resume();
         }, {once:true});
@@ -547,10 +538,11 @@
             bearsAvoided = 0; cheeseCollected = 0; 
             
             gameActive = true; isUserPaused = false; isSystemPaused = false; letterFound = false;
-            isShielded = false; document.body.classList.remove('shield-active');
+            isShielded = false; isBonusRound = false;
             
-            // RESETAM PAUZA VIZUALA
+            document.body.classList.remove('shield-active');
             document.body.classList.remove('game-paused');
+            document.body.classList.remove('love-active');
             pauseBtn.innerText = "⏸️";
 
             if(!prizePersistent) {
@@ -564,6 +556,7 @@
 
             sunsetOverlay.style.opacity = "0"; 
             nightOverlay.style.opacity = "0";
+            loveOverlay.style.opacity = "0";
             
             startScreen.classList.add('hidden'); 
             endScreen.classList.add('hidden'); 
@@ -602,21 +595,39 @@
             if(percentage > 100) percentage = 100;
             progressFill.style.width = percentage + '%';
             
-            if (score > 15) {
-                let sunsetOp = (score - 15) / 15; 
-                if(sunsetOp > 1) sunsetOp = 1;
-                sunsetOverlay.style.opacity = sunsetOp;
-            } else { sunsetOverlay.style.opacity = 0; }
+            if(!isBonusRound) {
+                if (score > 15) {
+                    let sunsetOp = (score - 15) / 15; if(sunsetOp > 1) sunsetOp = 1;
+                    sunsetOverlay.style.opacity = sunsetOp;
+                } else { sunsetOverlay.style.opacity = 0; }
 
-            if (score > 35) {
-                let nightOp = (score - 35) / 15; 
-                if(nightOp > 0.9) nightOp = 0.9;
-                nightOverlay.style.opacity = nightOp;
-            } else { nightOverlay.style.opacity = 0; }
-
-            if(score >= targetScore && !prizeUnlocked) {
-                unlockPrize();
+                if (score > 35) {
+                    let nightOp = (score - 35) / 15; if(nightOp > 0.9) nightOp = 0.9;
+                    nightOverlay.style.opacity = nightOp;
+                } else { nightOverlay.style.opacity = 0; }
             }
+
+            if(score >= targetScore && !prizeUnlocked) unlockPrize();
+        }
+
+        function activateBonusRound() {
+            isBonusRound = true;
+            document.body.classList.add('love-active');
+            loveOverlay.style.opacity = 1;
+            showMilestone("FURTUNA DE IUBIRE! ❤️");
+            playTone(800, 'sine', 1.0);
+            
+            // Muzica mai rapida (simulat)
+            bgMusic.playbackRate = 1.2;
+
+            setTimeout(() => {
+                isBonusRound = false;
+                document.body.classList.remove('love-active');
+                loveOverlay.style.opacity = 0;
+                bgMusic.playbackRate = 1.0;
+                // Revenim la normal (actualizam backgroundul in functie de scor)
+                updateScore(0);
+            }, 10000);
         }
 
         function unlockPrize() {
@@ -626,10 +637,8 @@
             claimBtn.classList.add('visible'); 
             triggerLoveRain(); 
             playTone(600, 'sine', 0.5); 
-            
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "Premiu Deblocat! 🎁", "#fff");
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-
             setTimeout(() => {
                 claimBtn.classList.remove('visible');
                 claimBtn.classList.add('minimized');
@@ -641,11 +650,13 @@
 
         function spawnLoop() {
             if (!gameActive) return;
-            
-            // CHECK PAUSE STATE
-            if (isUserPaused || isSystemPaused) { 
-                spawnInterval = setTimeout(spawnLoop, 500); // Verificam iar mai tarziu
-                return; 
+            if (isUserPaused || isSystemPaused) { spawnInterval = setTimeout(spawnLoop, 500); return; }
+
+            // MOD BONUS: SPAWN DOAR INIMI RAPID
+            if (isBonusRound) {
+                spawnEntity('❤️', 'gold'); // Inimile de aur dau 5 puncte!
+                spawnInterval = setTimeout(spawnLoop, 300); // Foarte rapid
+                return;
             }
 
             let speed = 700;
@@ -656,11 +667,10 @@
 
             const rand = Math.random();
             
-            // BIRDS
             if(score < 20 && Math.random() < 0.05) spawnBird();
 
-            // LOGICA SPAWN
             if (!letterFound && rand < 0.15 && score > 1) spawnEntity('💌', 'letter');
+            else if (rand < 0.02) spawnEntity('☁️', 'cloud'); // BONUS ROUND (RAR)
             else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
             else if (rand < 0.04) spawnEntity('🧀', 'cheese'); 
             else if (rand < 0.05) spawnEntity('💛', 'gold');
@@ -686,7 +696,7 @@
         }
 
         function spawnThought() {
-            if (!gameActive || isUserPaused || isSystemPaused) return;
+            if (!gameActive || isUserPaused || isSystemPaused || isBonusRound) return;
             const thought = document.createElement('div');
             thought.classList.add('thought-bubble');
             thought.innerText = thoughts[Math.floor(Math.random() * thoughts.length)];
@@ -703,6 +713,7 @@
             if(type === 'gold') item.classList.add('golden-item');
             if(type === 'cheese') item.classList.add('cheese-item');
             if(type === 'umbrella') item.classList.add('umbrella-item');
+            if(type === 'cloud') item.classList.add('cloud-item');
             if(type === 'letter') item.classList.add('letter-item');
             if(type === 'bear') item.classList.add('bear-item');
             if(type === 'bad') item.style.zIndex = "15";
@@ -711,8 +722,8 @@
             
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
-            if(type === 'cheese') duration = 2.2;
-            if(type === 'umbrella') duration = 2.0;
+            if(type === 'cheese' || type === 'umbrella') duration = 2.2;
+            if(type === 'cloud') duration = 3.5; // Norul pluteste lent
             if(type === 'bear') duration = 2.0; 
             
             item.style.animationDuration = duration + 's';
@@ -729,10 +740,7 @@
 
             let lifeTime = duration * 1000;
             let checkInterval = setInterval(() => {
-                if(isUserPaused || isSystemPaused) {
-                    // Prelungim viata daca e pauza
-                    return; 
-                }
+                if(isUserPaused || isSystemPaused) return; 
                 lifeTime -= 100;
                 if(lifeTime <= 0) { 
                     if(item.parentNode) item.remove(); 
@@ -768,13 +776,16 @@
 
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
             
-            if(type === 'good' || type === 'gold' || type === 'cheese' || type === 'umbrella') comboCount++;
+            if(type === 'good' || type === 'gold' || type === 'cheese' || type === 'umbrella' || type === 'cloud') comboCount++;
             else if (!isShielded) comboCount = 0; 
 
             let comboText = "";
             if(comboCount >= 3) comboText = " x" + comboCount;
 
-            if (type === 'umbrella') {
+            if (type === 'cloud') {
+                activateBonusRound();
+            }
+            else if (type === 'umbrella') {
                 activateShield();
                 updateScore(2); 
             }
@@ -786,9 +797,10 @@
                 if (navigator.vibrate) navigator.vibrate([100,50,100]);
             }
             else if (type === 'gold') {
+                // In bonus round punctele se dubleaza (e.g., 5 devine 10) - simplificat, lasam 5 dar vin multe
                 updateScore(5); 
                 playTone(1000, 'sine', 0.3); 
-                showFloatingText(x, y, "+5 IUBIRE!" + comboText, "#FFD700");
+                showFloatingText(x, y, "❤️" + comboText, "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
             } 
             else if (type === 'bear') {
@@ -847,7 +859,7 @@
 
         function openLetter() { 
             isSystemPaused = true; 
-            document.body.classList.add('game-paused'); // Freeze animations
+            document.body.classList.add('game-paused'); 
             letterModal.classList.remove('hidden'); 
             typeWriter(fullLetterText, 'typewriter-text', 30);
         }
@@ -855,7 +867,7 @@
         function closeLetter() { 
             letterModal.classList.add('hidden'); 
             isSystemPaused = false; 
-            document.body.classList.remove('game-paused'); // Unfreeze
+            document.body.classList.remove('game-paused'); 
             clearTimeout(typewriterTimeout); 
             document.getElementById('typewriter-text').innerHTML = fullLetterText; 
         }
@@ -866,6 +878,7 @@
             if (type === 'gold' || type === 'cheese') colors = ['#FFD700', '#FFA000'];
             if (type === 'bear' || type === 'bad') colors = ['#F44336', '#B71C1C'];
             if (type === 'umbrella') colors = ['#00BFFF', '#FFFFFF'];
+            if (type === 'cloud') colors = ['#FF69B4', '#FFFFFF'];
 
             confetti({
                 particleCount: 20, spread: 50,
@@ -935,7 +948,6 @@
                 highScoreEl.innerText = "Record: " + bestScore;
             }
             
-            // UPDATE STATS
             statBears.innerText = bearsAvoided;
             statCheese.innerText = cheeseCollected;
 
