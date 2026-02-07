@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/100/forest.png">
-    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌲</text></svg>">
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -19,8 +18,7 @@
         body {
             margin: 0; padding: 0; overflow: hidden;
             font-family: 'Quicksand', sans-serif;
-            height: 100vh; /* Fallback */
-            height: 100dvh; /* Dynamic Viewport Height pt mobil */
+            height: 100vh; height: 100dvh;
             display: flex; flex-direction: column; align-items: center;
             touch-action: none; user-select: none;
             background-color: #2c3e50;
@@ -58,8 +56,7 @@
         h1 {
             font-family: 'Pacifico', cursive; color: #fff;
             text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            margin-top: 40px; /* Spatiu pt notch iPhone */
-            font-size: 1.8rem; cursor: pointer; position: relative; z-index: 20;
+            margin-top: 50px; font-size: 1.8rem; cursor: pointer; position: relative; z-index: 20;
             transition: transform 0.2s;
         }
         h1:active { transform: scale(0.95); }
@@ -67,7 +64,7 @@
         #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; z-index: 5; }
 
         #sound-toggle {
-            position: absolute; top: 40px; left: 15px; /* Ajustat pt notch */
+            position: absolute; top: 50px; left: 15px;
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.3);
             color: white; font-size: 1.2rem; padding: 8px; border-radius: 50%;
             width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
@@ -75,16 +72,16 @@
         }
 
         #score-container {
-            position: absolute; top: 40px; right: 15px; /* Ajustat pt notch */
+            position: absolute; top: 50px; right: 15px;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
-            padding: 8px 12px; border-radius: 15px; z-index: 20;
+            padding: 8px 15px; border-radius: 15px; z-index: 20;
             border: 1px solid rgba(255,255,255,0.2);
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 130px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); min-width: 100px;
         }
-        #score-label { font-size: 0.75rem; color: #ddd; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #high-score { font-size: 0.65rem; color: #ffd700; margin-bottom: 5px; }
-        .progress-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+        #score-label { font-size: 0.9rem; color: #fff; margin-bottom: 4px; font-weight: bold; letter-spacing: 1px; }
+        #high-score { font-size: 0.7rem; color: #ffd700; margin-bottom: 5px; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
         #progress-fill {
             height: 100%; width: 0%; 
             background: linear-gradient(90deg, #ff9a9e 0%, #ff6b6b 100%);
@@ -92,19 +89,46 @@
             box-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
         }
 
+        /* --- SMART CLAIM BUTTON --- */
         #claim-btn {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) scale(0);
+            position: absolute; 
+            /* Pozitia Initiala: Centru Jos */
+            bottom: 40px; left: 50%; 
+            transform: translateX(-50%) scale(0); /* Ascuns initial */
+            
             background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #fff; font-family: 'Pacifico', cursive; font-size: 1.2rem;
             padding: 15px 40px; border-radius: 50px; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-            z-index: 60; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 60; cursor: pointer; 
             white-space: nowrap; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        #claim-btn.visible { transform: translateX(-50%) scale(1); animation: pulseBtn 2s infinite; }
+
+        /* Stare 1: Mare si vizibil */
+        #claim-btn.visible {
+            transform: translateX(-50%) scale(1);
+            animation: pulseBtn 2s infinite;
+        }
+
+        /* Stare 2: Minimizat in colt */
+        #claim-btn.minimized {
+            bottom: auto; left: auto; transform: none; /* Reset transform */
+            top: 120px; right: 15px; /* Pozitie sub scor */
+            
+            width: 50px; height: 50px; padding: 0;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            border: 2px solid #fff;
+            animation: none;
+        }
+        #claim-btn.minimized span { display: none; } /* Ascunde textul, lasa doar iconita */
+
         @keyframes pulseBtn { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
 
+        /* ITEMS */
         .item {
             position: absolute; font-size: 3.5rem; cursor: pointer;
             top: -120px; -webkit-tap-highlight-color: transparent; z-index: 5;
@@ -112,22 +136,13 @@
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
             animation: fall linear forwards, sway 3s ease-in-out infinite alternate;
         }
-
-        /* GANDURI PLUTITOARE (NOU) */
         .thought-bubble {
             position: absolute; font-family: 'Pacifico', cursive;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.1rem; pointer-events: none; z-index: 2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; pointer-events: none; z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); white-space: nowrap;
             animation: floatThought 8s linear forwards;
         }
-        @keyframes floatThought {
-            0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-20vh) scale(1); opacity: 0; }
-        }
+        @keyframes floatThought { 0% { transform: translateY(100vh) scale(0.8); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-20vh) scale(1); opacity: 0; } }
 
         .golden-item { font-size: 4rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; }
         .cheese-item { font-size: 4.2rem !important; filter: drop-shadow(0 0 15px orange); z-index: 21 !important; }
@@ -227,12 +242,13 @@
     <h1 onclick="triggerLoveRain()">🌲 Pădurea Ioanei 🌲</h1>
     
     <div id="game-container">
-        <div id="claim-btn" onclick="manualFinish()">🎁 DESCHIDE CADOUL</div>
+        <div id="claim-btn" onclick="manualFinish()">
+            🎁 <span id="btn-text">DESCHIDE CADOUL</span>
+        </div>
 
         <div id="score-container">
             <div id="high-score">Record: 0</div>
-            <div id="score-label">Relaxare</div>
-            <div class="progress-bar-bg">
+            <div id="score-label">Scor: 0</div> <div class="progress-bar-bg">
                 <div id="progress-fill"></div>
             </div>
         </div>
@@ -295,6 +311,7 @@
     <script>
         const gameContainer = document.getElementById('game-container');
         const progressFill = document.getElementById('progress-fill');
+        const scoreLabel = document.getElementById('score-label'); // NOU
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
         const letterModal = document.getElementById('letter-modal');
@@ -323,15 +340,7 @@
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         
-        // Ganduri automate
-        const thoughts = [
-            "Mi-e dor de tine...", 
-            "Ești minunată...", 
-            "Te iubesc! ❤️", 
-            "Valea Doftanei e mai frumoasă cu tine...", 
-            "Abia aștept să te văd!", 
-            "Relaxează-te..."
-        ];
+        const thoughts = ["Mi-e dor de tine...", "Ești minunată...", "Te iubesc! ❤️", "Valea Doftanei e mai frumoasă cu tine...", "Abia aștept să te văd!", "Relaxează-te..."];
 
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
@@ -368,7 +377,10 @@
             gameActive = true; isPaused = false; letterFound = false;
             prizeUnlocked = false;
             sunsetOverlay.style.opacity = "0"; 
+            
+            // RESET BUTON
             claimBtn.classList.remove('visible'); 
+            claimBtn.classList.remove('minimized'); 
             
             startScreen.classList.add('hidden'); 
             endScreen.classList.add('hidden'); 
@@ -383,14 +395,15 @@
             bgMusic.play().catch(e => console.log("Audio waiting"));
             
             spawnInterval = setTimeout(spawnLoop, 700);
-            
-            // Pornim gandurile automate
-            thoughtInterval = setInterval(spawnThought, 12000); // La fiecare 12 secunde
+            thoughtInterval = setInterval(spawnThought, 12000); 
         }
 
         function updateScore(val) {
             score += val; if(score < 0) score = 0;
             
+            // UPDATE TEXT SCOR
+            scoreLabel.innerText = "Scor: " + score;
+
             let percentage = (score / targetScore) * 100;
             if(percentage > 100) percentage = 100;
             progressFill.style.width = percentage + '%';
@@ -410,6 +423,12 @@
             triggerLoveRain(); 
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "Premiu Deblocat! 🎁", "#fff");
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+            // Dupa 3 secunde, minimizam butonul
+            setTimeout(() => {
+                claimBtn.classList.remove('visible');
+                claimBtn.classList.add('minimized');
+            }, 3000);
         }
 
         function manualFinish() {
@@ -445,15 +464,13 @@
             spawnInterval = setTimeout(spawnLoop, speed);
         }
 
-        // Functia pentru ganduri automate
         function spawnThought() {
             if (!gameActive || isPaused) return;
             const thought = document.createElement('div');
             thought.classList.add('thought-bubble');
             thought.innerText = thoughts[Math.floor(Math.random() * thoughts.length)];
-            thought.style.left = Math.random() * 60 + 20 + '%'; // Centrat
+            thought.style.left = Math.random() * 60 + 20 + '%'; 
             gameContainer.appendChild(thought);
-            
             setTimeout(() => { if(thought.parentNode) thought.remove(); }, 8000);
         }
 
