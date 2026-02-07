@@ -14,7 +14,6 @@
         body {
             margin: 0; padding: 0; overflow: hidden;
             font-family: 'Quicksand', sans-serif;
-            /* Fundal Munte */
             background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed; 
             background-size: cover;
             height: 100vh;
@@ -24,11 +23,10 @@
 
         body::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.35); /* Putin mai intunecat pentru contrast */
+            background: rgba(0, 0, 0, 0.35);
             z-index: 1;
         }
 
-        /* LICURICI */
         .firefly {
             position: absolute; width: 4px; height: 4px;
             background-color: #ffd700; border-radius: 50%;
@@ -105,17 +103,14 @@
             text-align: left; width: 100%; max-width: 500px;
         }
 
-        /* GRAFICA VOUCHER IMBUNATATITA */
         .voucher-card {
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
             color: #333; padding: 25px; border-radius: 12px;
             width: 85%; max-width: 350px;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.8); /* Glow auriu */
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
             transform: rotate(-2deg); margin-bottom: 20px;
-            border: 4px double #DAA520; /* Margine dubla aurie */
-            position: relative; overflow: hidden;
+            border: 4px double #DAA520; position: relative; overflow: hidden;
         }
-        /* Stampila APROBAT */
         .voucher-card::before {
             content: "APROBAT"; position: absolute; bottom: 10px; right: 10px;
             font-weight: bold; color: rgba(255, 0, 0, 0.2); 
@@ -196,7 +191,7 @@
         <div style="background: #fff; padding: 20px; border-radius: 5px; max-width: 90%;">
             <h3 style="color: #333; margin-top:0;">💌 De la Ionuț</h3>
             <div class="handwritten-text">
-                Hey, Campiono! 🌲<br><br>
+                Hey, Ioana! 🌲<br><br>
                 Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>
                 M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>
                 Distracție plăcută în continuare, mănâncă ceva bun și pentru mine și... <b>ai grijă la urși!</b> 🐻<br><br>
@@ -242,14 +237,13 @@
         let gameActive = false;
         let isPaused = false;
         let spawnInterval;
-        let confettiInterval; // Variabila pentru confetti
+        let confettiInterval; 
         let letterFound = false; 
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
 
-        // --- DATA REVENIRII: DUMINICA, 8 FEBRUARIE 2026 ---
-        // Luna 1 este Februarie (0=Ian, 1=Feb)
+        // --- DATA REVENIRII: DUMINICA, 8 FEBRUARIE 2026, ORA 19:00 ---
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
         window.onload = function() {
@@ -267,7 +261,7 @@
             }, 800);
             
             setInterval(updateCountdown, 1000);
-            updateCountdown(); // Apel initial
+            updateCountdown(); 
         };
 
         const targetScore = 30; 
@@ -276,18 +270,15 @@
             score = 0; updateScore(0);
             gameActive = true; isPaused = false; letterFound = false;
             
-            // RESETAM TOT
             startScreen.classList.add('hidden'); 
             endScreen.classList.add('hidden'); 
             letterModal.classList.add('hidden');
             
-            // OPRIM CONFETTI DACA MERGEAU
             if(confettiInterval) clearInterval(confettiInterval);
             if(window.confetti) window.confetti.reset();
 
             bgMusic.volume = 0.4; bgMusic.play().catch(e => console.log("Audio waiting"));
             
-            // Pornim bucla de joc
             spawnInterval = setTimeout(spawnLoop, 700);
         }
 
@@ -299,23 +290,22 @@
         function spawnLoop() {
             if (!gameActive) return;
             if (isPaused) {
-                spawnInterval = setTimeout(spawnLoop, 100); // Verificam iar peste 100ms
+                spawnInterval = setTimeout(spawnLoop, 100); 
                 return;
             }
 
-            // --- DIFICULTATE PROGRESIVA ---
-            // Cu cat scorul e mai mare, cu atat vin mai repede
-            let speed = 700; // Viteza initiala
+            // DIFICULTATE PROGRESIVA
+            let speed = 700;
             if(score > 10) speed = 600;
             if(score > 20) speed = 500;
-            if(score > 25) speed = 400; // Modul turbo
+            if(score > 25) speed = 400;
 
             const rand = Math.random();
             
-            // Logica Spawn
+            // Logica Spawn - URSII SUNT MAI DESI ACUM (8%)
             if (!letterFound && rand < 0.03 && score > 5) spawnEntity('💌', 'letter');
             else if (rand < 0.05) spawnEntity('💛', 'gold');
-            else if (rand < 0.04) spawnEntity('🐻', 'bear'); // URSUL
+            else if (rand < 0.08) spawnEntity('🐻', 'bear'); // Crescut la 8%
             else if (rand < 0.25) {
                 const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
                 spawnEntity(badIcon, 'bad');
@@ -324,7 +314,6 @@
                 spawnEntity(goodIcon, 'good');
             }
 
-            // Programam urmatorul spawn
             spawnInterval = setTimeout(spawnLoop, speed);
         }
 
@@ -340,10 +329,9 @@
 
             item.style.left = Math.random() * 80 + 10 + '%';
             
-            // Viteza de cadere variaza si ea usor
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
-            if(type === 'bear') duration = 1.8; // Ursul e rapid!
+            if(type === 'bear') duration = 1.8; 
             
             item.style.animationDuration = duration + 's';
 
@@ -369,6 +357,9 @@
         function catchItem(item, type, x, y) {
             if (!gameActive || isPaused) return;
             
+            // Efectul de particule la click (Sparkles)
+            explode(x, y, type);
+
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
             
             if (type === 'gold') {
@@ -390,6 +381,25 @@
             setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
             
             if (score >= targetScore) endGame();
+        }
+
+        // Functia noua pentru efecte la click
+        function explode(x, y, type) {
+            let colors = ['#ffffff'];
+            if (type === 'good') colors = ['#4CAF50', '#8BC34A']; // Verde
+            if (type === 'gold') colors = ['#FFD700', '#FFA000']; // Auriu
+            if (type === 'bear' || type === 'bad') colors = ['#F44336', '#B71C1C']; // Rosu
+
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { x: x / window.innerWidth, y: y / window.innerHeight },
+                colors: colors,
+                disableForReducedMotion: true,
+                gravity: 2,
+                scalar: 0.8,
+                zIndex: 99
+            });
         }
 
         function createFireflies() {
@@ -433,7 +443,7 @@
         
         function endGame() {
             gameActive = false; 
-            if(spawnInterval) clearTimeout(spawnInterval); // Oprim generarea
+            if(spawnInterval) clearTimeout(spawnInterval); 
             
             document.querySelectorAll('.item').forEach(el => el.remove());
             setTimeout(() => { 
@@ -449,9 +459,9 @@
         }
         
         function triggerConfetti() {
-            var duration = 3000; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
+            var duration = 6000; // 6 secunde
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
             
-            // Oprim intervalul vechi daca exista
             if(confettiInterval) clearInterval(confettiInterval);
 
             var animationEnd = Date.now() + duration;
@@ -459,7 +469,8 @@
             confettiInterval = setInterval(function() {
               var timeLeft = animationEnd - Date.now();
               if (timeLeft <= 0) return clearInterval(confettiInterval);
-              confetti(Object.assign({}, defaults, { particleCount: 50, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+              // Mai multe particule (particleCount 70)
+              confetti(Object.assign({}, defaults, { particleCount: 70, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
         }
         
