@@ -25,6 +25,14 @@
             transition: background-color 2s ease;
         }
 
+        /* PAUSE STATE - INGREATA TOATE ANIMATIILE */
+        body.game-paused .item, 
+        body.game-paused .bg-layer, 
+        body.game-paused .bird,
+        body.game-paused .firefly {
+            animation-play-state: paused !important;
+        }
+
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
@@ -50,16 +58,11 @@
             z-index: 0; pointer-events: none;
         }
 
-        /* MILESTONE TOAST (Mesaj jos) */
-        #milestone-toast {
-            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(255, 255, 255, 0.9); color: #333;
-            padding: 10px 20px; border-radius: 30px; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 80;
-            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b;
+        .star {
+            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
+            z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out;
         }
-        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
 
         .trail-dot {
             position: absolute; width: 8px; height: 8px;
@@ -69,21 +72,6 @@
             animation: fadeTrail 0.6s linear forwards;
         }
         @keyframes fadeTrail { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.2); opacity: 0; } }
-
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; width: 100%; }
-        .stat-box {
-            background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px;
-            text-align: center; font-size: 0.8rem; color: #eee;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .stat-val { font-weight: bold; font-size: 1.1rem; color: #ffd700; display: block; }
-
-        .shield-active { box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff; animation: pulseShield 1s infinite alternate; }
-        @keyframes pulseShield { 0% { box-shadow: inset 0 0 30px #00BFFF; } 100% { box-shadow: inset 0 0 60px #00BFFF, inset 0 0 20px #fff; } }
-
-        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
 
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -103,13 +91,19 @@
 
         #game-container { position: relative; width: 100%; height: 100%; overflow: hidden; z-index: 5; }
 
-        #sound-toggle {
-            position: absolute; top: 50px; left: 15px;
+        /* HEADER BUTTONS */
+        .header-btn {
+            position: absolute; top: 50px;
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.3);
-            color: white; font-size: 1.2rem; padding: 8px; border-radius: 50%;
+            color: white; font-size: 1.2rem; padding: 0; border-radius: 50%;
             width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
             cursor: pointer; z-index: 50; backdrop-filter: blur(5px);
+            transition: transform 0.1s;
         }
+        .header-btn:active { transform: scale(0.9); }
+
+        #sound-toggle { left: 15px; }
+        #pause-toggle { left: 65px; } /* Langa sunet */
 
         #score-container {
             position: absolute; top: 50px; right: 15px;
@@ -160,6 +154,20 @@
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
             animation: fall linear forwards, sway 3s ease-in-out infinite alternate;
         }
+        
+        /* BIRD ANIMATION */
+        .bird {
+            position: absolute; width: 40px; height: 40px;
+            background: url('https://img.icons8.com/ios-filled/50/ffffff/bird.png');
+            background-size: contain; background-repeat: no-repeat;
+            opacity: 0.6; z-index: -2; pointer-events: none;
+        }
+        @keyframes flyRight {
+            0% { left: -10%; transform: translateY(0) scale(0.5); }
+            50% { transform: translateY(-30px) scale(0.6); }
+            100% { left: 110%; transform: translateY(0) scale(0.5); }
+        }
+
         .thought-bubble {
             position: absolute; font-family: 'Pacifico', cursive;
             color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; pointer-events: none; z-index: 2;
@@ -242,6 +250,18 @@
         
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
+        
+        /* MILESTONE TOAST */
+        #milestone-toast {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: rgba(255, 255, 255, 0.95); color: #333;
+            padding: 10px 25px; border-radius: 30px; font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 80;
+            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b; font-size: 1.2rem;
+        }
+        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -264,7 +284,8 @@
         <p id="loading-text" style="color:#ddd; font-weight:bold;">Se încarcă aerul curat...</p>
     </div>
 
-    <button id="sound-toggle" onclick="toggleSound()">🔊</button>
+    <button id="sound-toggle" class="header-btn" onclick="toggleSound()">🔊</button>
+    <button id="pause-toggle" class="header-btn" onclick="togglePause()">⏸️</button>
 
     <h1 onclick="triggerLoveRain()">🌲 Pădurea Ioanei 🌲</h1>
     
@@ -279,6 +300,15 @@
             <div class="progress-bar-bg">
                 <div id="progress-fill"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="pause-modal" class="modal hidden" style="z-index: 150;">
+        <div class="modal-content" style="background: rgba(255,255,255,0.9); color:#333;">
+            <h2 style="color:#2c3e50;">Pauză de Cafea ☕</h2>
+            <p style="font-size:1.1rem;">Inspiră... Expiră...<br>Aerul de munte e minunat!</p>
+            <div style="font-size:2rem; margin:20px 0;">🏔️ 🧘‍♀️</div>
+            <button class="primary-btn" onclick="togglePause()">Continuă</button>
         </div>
     </div>
 
@@ -341,12 +371,14 @@
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
         const letterModal = document.getElementById('letter-modal');
+        const pauseModal = document.getElementById('pause-modal');
         const loadingScreen = document.getElementById('loading-screen');
         const loadingText = document.getElementById('loading-text');
         const bgMusic = document.getElementById('bg-music');
         const countdownTimer = document.getElementById('countdown-timer');
         const damageOverlay = document.getElementById('damage-overlay');
         const soundBtn = document.getElementById('sound-toggle');
+        const pauseBtn = document.getElementById('pause-toggle');
         const highScoreEl = document.getElementById('high-score');
         const sunsetOverlay = document.getElementById('sunset-overlay');
         const nightOverlay = document.getElementById('night-overlay');
@@ -364,7 +396,8 @@
         let isMuted = savedMute === 'true';
 
         let gameActive = false;
-        let isPaused = false;
+        let isUserPaused = false; // Pauza de la buton
+        let isSystemPaused = false; // Pauza de la scrisoare
         let spawnInterval;
         let thoughtInterval;
         let confettiInterval; 
@@ -387,7 +420,7 @@
 
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
-        // AUDIO CONTEXT (SYNTH)
+        // AUDIO CONTEXT
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type, duration) {
              if(isMuted) return;
@@ -407,7 +440,7 @@
             else document.title = originalTitle;
         });
 
-        // POINTER MOVE PENTRU DESKTOP SI MOBIL
+        // TOUCH TRAIL
         window.addEventListener('pointermove', function(e) {
             createTrail(e.clientX, e.clientY);
         });
@@ -424,7 +457,7 @@
         }
 
         window.onload = function() {
-            setSmartGreeting(); // Setam salutul
+            setSmartGreeting();
             createFireflies(); 
             createStars();
             highScoreEl.innerText = "Record: " + bestScore;
@@ -480,7 +513,27 @@
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             if(!isMuted) {
                 if(audioCtx.state === 'suspended') audioCtx.resume();
-                if(gameActive) bgMusic.play().catch(e => console.log(e));
+                if(gameActive && !isUserPaused && !isSystemPaused) bgMusic.play().catch(e => console.log(e));
+            }
+        }
+
+        // TOGGLE PAUSE
+        function togglePause() {
+            if(!gameActive || isSystemPaused) return; // Nu punem pauza in timpul scrisorii
+            
+            isUserPaused = !isUserPaused;
+            
+            if(isUserPaused) {
+                document.body.classList.add('game-paused');
+                pauseModal.classList.remove('hidden');
+                pauseBtn.innerText = "▶️";
+                bgMusic.pause();
+            } else {
+                document.body.classList.remove('game-paused');
+                pauseModal.classList.add('hidden');
+                pauseBtn.innerText = "⏸️";
+                if(!isMuted) bgMusic.play();
+                spawnLoop(); // Restart loop logic
             }
         }
 
@@ -493,9 +546,13 @@
             score = 0; comboCount = 0; updateScore(0);
             bearsAvoided = 0; cheeseCollected = 0; 
             
-            gameActive = true; isPaused = false; letterFound = false;
+            gameActive = true; isUserPaused = false; isSystemPaused = false; letterFound = false;
             isShielded = false; document.body.classList.remove('shield-active');
             
+            // RESETAM PAUZA VIZUALA
+            document.body.classList.remove('game-paused');
+            pauseBtn.innerText = "⏸️";
+
             if(!prizePersistent) {
                 prizeUnlocked = false;
                 claimBtn.classList.remove('visible'); 
@@ -536,7 +593,6 @@
             score += val; if(score < 0) score = 0;
             scoreLabel.innerText = "Scor: " + score;
 
-            // Milestones logic
             if(oldScore < 10 && score >= 10) showMilestone("Super Start! 🚀");
             if(oldScore < 30 && score >= 30) showMilestone("Premiu Deblocat! 🎁");
             if(oldScore < 50 && score >= 50) showMilestone("Ești Expertă! 🌟");
@@ -585,7 +641,12 @@
 
         function spawnLoop() {
             if (!gameActive) return;
-            if (isPaused) { spawnInterval = setTimeout(spawnLoop, 100); return; }
+            
+            // CHECK PAUSE STATE
+            if (isUserPaused || isSystemPaused) { 
+                spawnInterval = setTimeout(spawnLoop, 500); // Verificam iar mai tarziu
+                return; 
+            }
 
             let speed = 700;
             if(score > 10) speed = 600;
@@ -595,7 +656,10 @@
 
             const rand = Math.random();
             
-            // CRESCUT SANSELE SCRISORII LA 15% SI PRAG MAI MIC
+            // BIRDS
+            if(score < 20 && Math.random() < 0.05) spawnBird();
+
+            // LOGICA SPAWN
             if (!letterFound && rand < 0.15 && score > 1) spawnEntity('💌', 'letter');
             else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
             else if (rand < 0.04) spawnEntity('🧀', 'cheese'); 
@@ -611,8 +675,18 @@
             spawnInterval = setTimeout(spawnLoop, speed);
         }
 
+        function spawnBird() {
+            if(isUserPaused || isSystemPaused) return;
+            const bird = document.createElement('div');
+            bird.classList.add('bird');
+            bird.style.top = Math.random() * 30 + '%'; 
+            bird.style.animation = 'flyRight 8s linear forwards';
+            gameContainer.appendChild(bird);
+            setTimeout(() => bird.remove(), 8000);
+        }
+
         function spawnThought() {
-            if (!gameActive || isPaused) return;
+            if (!gameActive || isUserPaused || isSystemPaused) return;
             const thought = document.createElement('div');
             thought.classList.add('thought-bubble');
             thought.innerText = thoughts[Math.floor(Math.random() * thoughts.length)];
@@ -655,12 +729,14 @@
 
             let lifeTime = duration * 1000;
             let checkInterval = setInterval(() => {
-                if(!isPaused) {
-                    lifeTime -= 100;
-                    if(lifeTime <= 0) { 
-                        if(item.parentNode) item.remove(); 
-                        comboCount = 0; clearInterval(checkInterval); 
-                    }
+                if(isUserPaused || isSystemPaused) {
+                    // Prelungim viata daca e pauza
+                    return; 
+                }
+                lifeTime -= 100;
+                if(lifeTime <= 0) { 
+                    if(item.parentNode) item.remove(); 
+                    comboCount = 0; clearInterval(checkInterval); 
                 }
             }, 100);
         }
@@ -668,24 +744,26 @@
         function activateShield() {
             isShielded = true;
             document.body.classList.add('shield-active');
-            playTone(600, 'sine', 0.5); // Shield Sound
+            playTone(600, 'sine', 0.5); 
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "SCUT ACTIV! 🛡️", "#00BFFF");
             setTimeout(() => {
-                isShielded = false;
-                document.body.classList.remove('shield-active');
+                if(gameActive && !isUserPaused && !isSystemPaused) {
+                    isShielded = false;
+                    document.body.classList.remove('shield-active');
+                }
             }, 5000);
         }
 
         function triggerDamage() {
             damageOverlay.style.opacity = "1";
-            playTone(150, 'sawtooth', 0.3); // Damage Sound
+            playTone(150, 'sawtooth', 0.3); 
             setTimeout(() => { damageOverlay.style.opacity = "0"; }, 150);
             document.body.classList.add('shake');
             setTimeout(() => document.body.classList.remove('shake'), 500);
         }
 
         function catchItem(item, type, x, y) {
-            if (!gameActive || isPaused) return;
+            if (!gameActive || isUserPaused || isSystemPaused) return;
             explode(x, y, type);
 
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
@@ -768,18 +846,18 @@
         }
 
         function openLetter() { 
-            isPaused = true; 
-            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused'); 
+            isSystemPaused = true; 
+            document.body.classList.add('game-paused'); // Freeze animations
             letterModal.classList.remove('hidden'); 
             typeWriter(fullLetterText, 'typewriter-text', 30);
         }
 
         function closeLetter() { 
             letterModal.classList.add('hidden'); 
-            isPaused = false; 
+            isSystemPaused = false; 
+            document.body.classList.remove('game-paused'); // Unfreeze
             clearTimeout(typewriterTimeout); 
             document.getElementById('typewriter-text').innerHTML = fullLetterText; 
-            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running'); 
         }
 
         function explode(x, y, type) {
