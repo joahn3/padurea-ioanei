@@ -28,13 +28,12 @@
             animation: zoomBg 30s alternate infinite linear;
         }
         
-        /* STRAT PENTRU APUS (SUNSET) */
+        /* STRAT APUS */
         .sunset-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255, 140, 0, 0.6), rgba(128, 0, 128, 0.3));
-            z-index: -1; pointer-events: none; opacity: 0; /* Incepe invizibil */
-            transition: opacity 1s ease;
-            mix-blend-mode: overlay;
+            background: linear-gradient(to bottom, rgba(255, 140, 0, 0.5), rgba(128, 0, 128, 0.3));
+            z-index: -1; pointer-events: none; opacity: 0;
+            transition: opacity 1s ease; mix-blend-mode: overlay;
         }
         
         .overlay {
@@ -46,8 +45,7 @@
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(255, 0, 0, 0.15);
-            z-index: 999; pointer-events: none; opacity: 0;
-            transition: opacity 0.1s;
+            z-index: 999; pointer-events: none; opacity: 0; transition: opacity 0.1s;
         }
 
         @keyframes zoomBg { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
@@ -72,13 +70,11 @@
 
         #score-container {
             position: absolute; top: 15px; right: 15px;
-            background: rgba(0, 0, 0, 0.6); 
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
             padding: 8px 12px; border-radius: 15px; z-index: 20;
             border: 1px solid rgba(255,255,255,0.2);
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            width: 130px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 130px;
         }
         #score-label { font-size: 0.75rem; color: #ddd; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         #high-score { font-size: 0.65rem; color: #ffd700; margin-bottom: 5px; }
@@ -89,6 +85,20 @@
             transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
         }
+
+        /* CLAIM BUTTON (Apare cand scor >= 30) */
+        #claim-btn {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%) scale(0);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #fff; font-family: 'Pacifico', cursive; font-size: 1.2rem;
+            padding: 15px 40px; border-radius: 50px; border: 4px solid #fff;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            z-index: 50; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 10px;
+        }
+        #claim-btn.visible { transform: translateX(-50%) scale(1); animation: pulseBtn 2s infinite; }
+        @keyframes pulseBtn { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
 
         .item {
             position: absolute; font-size: 3.5rem; cursor: pointer;
@@ -108,19 +118,16 @@
 
         .modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(20, 30, 40, 0.7);
+            background: rgba(20, 30, 40, 0.75);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 100; color: white; text-align: center; padding: 15px;
             box-sizing: border-box; backdrop-filter: blur(15px);
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px; border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            width: 100%; max-width: 360px;
-            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            width: 100%; max-width: 360px; box-sizing: border-box;
         }
 
         .voucher-card {
@@ -134,10 +141,8 @@
         .voucher-card h2 { color: #ff4757; font-family: 'Pacifico'; font-size: 1.5rem; margin: 10px 0; line-height: 1.3; }
         .voucher-card::before {
             content: "VIP PASS"; position: absolute; bottom: 5px; right: 5px;
-            font-weight: bold; color: rgba(218, 165, 32, 0.3); 
-            border: 3px solid rgba(218, 165, 32, 0.3);
-            padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem;
-            pointer-events: none;
+            font-weight: bold; color: rgba(218, 165, 32, 0.3); border: 3px solid rgba(218, 165, 32, 0.3);
+            padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem; pointer-events: none;
         }
 
         #countdown-timer { font-size: 1.4rem; font-weight: bold; color: #76ff03; font-family: monospace; letter-spacing: 1px; text-shadow: 0 0 15px rgba(118, 255, 3, 0.6); }
@@ -173,7 +178,6 @@
         
         .floating-msg { position: absolute; font-weight: bold; color: #ff4757; font-size: 1.4rem; pointer-events: none; z-index: 200; text-shadow: 2px 2px 0 #fff; animation: floatUp 1s ease-out forwards; white-space: nowrap; }
         @keyframes floatUp { to { transform: translateY(-100px) scale(1.3); opacity: 0; } }
-        
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
         .hidden { display: none !important; }
@@ -201,6 +205,8 @@
     <h1 onclick="triggerLoveRain()">🌲 Pădurea Ioanei 🌲</h1>
     
     <div id="game-container">
+        <div id="claim-btn" onclick="manualFinish()">🎁 DESCHIDE CADOUL</div>
+
         <div id="score-container">
             <div id="high-score">Record: 0</div>
             <div id="score-label">Relaxare</div>
@@ -214,11 +220,12 @@
         <div class="modal-content">
             <h2>Salut, Ioana! ❤️</h2>
             <p>Am auzit că îți place la munte.<br>Hai să ne jucăm puțin!</p>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.85rem;">
-                🌲 <b>Brazi:</b> +1 punct<br>
+            <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.85rem; line-height:1.6;">
+                🌲 <b>Natură:</b> +1 punct<br>
+                <span style="font-size:0.75rem; color:#aaa; margin-left:20px;">(Brazi, Flori, Alune, Ciuperci...)</span><br>
                 💛 <b>Inima:</b> +5 puncte<br>
                 🧀 <b>Cașcavea:</b> +10 (Super Rară!)<br>
-                🌧️ <b>Ploaie / 🦟:</b> -2 puncte<br>
+                🌧️ <b>Ploaie / 🦟 Țânțari:</b> -2 puncte<br>
                 🐻 <b>URȘI:</b> -5 puncte (Fugi!)<br>
                 💌 <b>Plic Secret:</b> Deschide-l!
             </div>
@@ -276,7 +283,8 @@
         const damageOverlay = document.getElementById('damage-overlay');
         const soundBtn = document.getElementById('sound-toggle');
         const highScoreEl = document.getElementById('high-score');
-        const sunsetOverlay = document.getElementById('sunset-overlay'); // NOU
+        const sunsetOverlay = document.getElementById('sunset-overlay');
+        const claimBtn = document.getElementById('claim-btn');
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
@@ -286,7 +294,8 @@
         let confettiInterval; 
         let letterFound = false; 
         let isMuted = false;
-        let comboCount = 0; // NOU: Combo
+        let comboCount = 0;
+        let prizeUnlocked = false;
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
@@ -324,7 +333,9 @@
         function startGame() {
             score = 0; comboCount = 0; updateScore(0);
             gameActive = true; isPaused = false; letterFound = false;
-            sunsetOverlay.style.opacity = "0"; // Reset apus
+            prizeUnlocked = false;
+            sunsetOverlay.style.opacity = "0"; 
+            claimBtn.classList.remove('visible'); // Ascundem butonul
             
             startScreen.classList.add('hidden'); 
             endScreen.classList.add('hidden'); 
@@ -343,13 +354,31 @@
         function updateScore(val) {
             score += val; if(score < 0) score = 0;
             
+            // ACTUALIZARE BARA SI APUS
             let percentage = (score / targetScore) * 100;
             if(percentage > 100) percentage = 100;
             progressFill.style.width = percentage + '%';
             
-            // EFECT APUS: Cu cat e mai aproape de final, cu atat e mai "apus"
             let opacity = (score / targetScore) * 0.8; 
+            if(opacity > 0.8) opacity = 0.8;
             sunsetOverlay.style.opacity = opacity;
+
+            // DEBLOCARE PREMIU LA 30
+            if(score >= targetScore && !prizeUnlocked) {
+                unlockPrize();
+            }
+        }
+
+        function unlockPrize() {
+            prizeUnlocked = true;
+            claimBtn.classList.add('visible'); // Apare butonul
+            triggerLoveRain(); // Sarbatoare mica
+            showFloatingText(window.innerWidth/2, window.innerHeight/2, "Premiu Deblocat! 🎁", "#fff");
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        }
+
+        function manualFinish() {
+            endGame();
         }
 
         function spawnLoop() {
@@ -362,7 +391,7 @@
             let speed = 700;
             if(score > 10) speed = 600;
             if(score > 20) speed = 500;
-            if(score > 25) speed = 400;
+            if(score > 30) speed = 400; // Viteza maxima dupa ce deblocheaza premiul
 
             const rand = Math.random();
             
@@ -417,8 +446,7 @@
                     lifeTime -= 100;
                     if(lifeTime <= 0) { 
                         if(item.parentNode) item.remove(); 
-                        // Daca cade ceva bun si nu il prinde, reset combo? (Optional)
-                        // comboCount = 0; 
+                        comboCount = 0; // Reset combo if missed
                         clearInterval(checkInterval); 
                     }
                 }
@@ -442,11 +470,11 @@
             if(type === 'good' || type === 'gold' || type === 'cheese') {
                 comboCount++;
             } else {
-                comboCount = 0; // Reset la greseala
+                comboCount = 0; 
             }
 
             let comboText = "";
-            if(comboCount >= 3) comboText = " COMBO x" + comboCount;
+            if(comboCount >= 3) comboText = " x" + comboCount;
 
             if (type === 'cheese') {
                 updateScore(10); showFloatingText(x, y, "Mmm, Cașcavea!" + comboText, "orange");
@@ -466,7 +494,6 @@
                 if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
                 updateScore(1); 
-                // Mesaje random + Combo
                 const msgs = ["❤️", "Super!", "Yay!", "Bravo!"];
                 const msg = msgs[Math.floor(Math.random()*msgs.length)] + (comboCount > 2 ? comboText : "");
                 showFloatingText(x, y, msg, "#ff4757");
@@ -474,7 +501,7 @@
             item.style.transition = "all 0.1s"; item.style.transform = "scale(1.5)"; item.style.opacity = "0";
             setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
             
-            if (score >= targetScore) endGame();
+            // JOCUL NU SE MAI OPRESTE AUTOMAT. TREBUIE SA APESE BUTONUL CLAIM.
         }
 
         function explode(x, y, type) {
@@ -484,14 +511,10 @@
             if (type === 'bear' || type === 'bad') colors = ['#F44336', '#B71C1C'];
 
             confetti({
-                particleCount: 20,
-                spread: 50,
+                particleCount: 20, spread: 50,
                 origin: { x: x / window.innerWidth, y: y / window.innerHeight },
-                colors: colors,
-                disableForReducedMotion: true,
-                gravity: 1.5,
-                scalar: 0.7,
-                zIndex: 9999
+                colors: colors, disableForReducedMotion: true,
+                gravity: 1.5, scalar: 0.7, zIndex: 9999
             });
         }
 
@@ -526,11 +549,7 @@
         function updateCountdown() {
             const nowTime = new Date().getTime();
             const diff = returnDate - nowTime;
-            
-            if (diff < 0) {
-                countdownTimer.innerText = "Te aștept acasă!";
-                return;
-            }
+            if (diff < 0) { countdownTimer.innerText = "Te aștept acasă!"; return; }
             
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -554,6 +573,7 @@
             gameActive = false; 
             if(spawnInterval) clearTimeout(spawnInterval); 
             
+            // SAVE HIGH SCORE
             if(score > bestScore) {
                 bestScore = score;
                 localStorage.setItem('ioana_best_score', bestScore);
@@ -568,7 +588,7 @@
         }
         
         function sendWhatsapp() {
-            let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶 (Și m-am ferit de urși!)";
+            let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶 (Scor: " + score + ")";
             let encodedText = encodeURIComponent(text);
             window.open(`https://wa.me/?text=${encodedText}`, '_blank');
         }
