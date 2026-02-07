@@ -44,42 +44,13 @@
             z-index: -1; pointer-events: none; opacity: 0;
             transition: opacity 3s ease;
         }
-        .love-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255, 105, 180, 0.4), rgba(255, 20, 147, 0.6));
-            z-index: -1; pointer-events: none; opacity: 0;
-            transition: opacity 0.5s ease; mix-blend-mode: screen;
-        }
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
             z-index: 0; pointer-events: none;
         }
 
-        /* PLOAIE (RAIN EFFECT) */
-        .rain-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1; overflow: hidden; opacity: 0; transition: opacity 1s;
-        }
-        .rain-active .rain-container { opacity: 1; }
-        .raindrop {
-            position: absolute; width: 2px; height: 15px;
-            background: rgba(255, 255, 255, 0.6);
-            top: -20px; animation: rainFall linear infinite;
-        }
-        @keyframes rainFall { to { transform: translateY(110vh); } }
-
-        /* MILESTONE TOAST */
-        #milestone-toast {
-            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(255, 255, 255, 0.95); color: #333;
-            padding: 10px 25px; border-radius: 30px; font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 80;
-            opacity: 0; pointer-events: none; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b; font-size: 1.2rem;
-        }
-        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
+        /* TRAIL */
         .trail-dot {
             position: absolute; width: 8px; height: 8px;
             background: radial-gradient(circle, #fff 30%, #ffd700 100%);
@@ -226,12 +197,7 @@
         }
         .voucher-card h2 { color: #ff4757; font-family: 'Pacifico'; font-size: 1.5rem; margin: 10px 0; line-height: 1.3; }
         
-        /* RANKING BADGES */
-        .rank-badge { 
-            position: absolute; bottom: 5px; right: 5px;
-            font-weight: bold; padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem; pointer-events: none;
-            border-radius: 5px; text-transform: uppercase;
-        }
+        .rank-badge { position: absolute; bottom: 5px; right: 5px; font-weight: bold; padding: 3px 8px; transform: rotate(-20deg); font-size: 1rem; pointer-events: none; border-radius: 5px; text-transform: uppercase; }
         .rank-silver { color: #7f8c8d; border: 3px solid #7f8c8d; }
         .rank-gold { color: #DAA520; border: 3px solid #DAA520; }
         .rank-platinum { color: #8e44ad; border: 3px solid #8e44ad; box-shadow: 0 0 10px #8e44ad; }
@@ -244,6 +210,13 @@
             font-family: 'Quicksand', sans-serif; font-weight: bold;
             box-shadow: 0 5px 15px rgba(238, 82, 83, 0.4); margin-top: 10px;
         }
+        
+        button.secondary-btn {
+            background: transparent; border: 2px solid #fff; padding: 12px 30px; width: 100%;
+            font-size: 1rem; color: white; border-radius: 50px; cursor: pointer;
+            font-family: 'Quicksand', sans-serif; font-weight: bold; margin-top: 15px;
+        }
+
         button.whatsapp-btn {
             background-color: #25D366; border: none; padding: 12px 25px; width: 100%;
             font-size: 1rem; color: white; border-radius: 50px; cursor: pointer;
@@ -280,6 +253,12 @@
         /* Pause State */
         body.game-paused .item, body.game-paused .bg-layer, body.game-paused .bird, body.game-paused .firefly, body.game-paused .raindrop { animation-play-state: paused !important; }
         .hidden { display: none !important; }
+        #milestone-toast { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(255, 255, 255, 0.95); color: #333; padding: 10px 25px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 80; opacity: 0; pointer-events: none; transition: all 0.5s; white-space: nowrap; font-family: 'Pacifico', cursive; color: #ff6b6b; font-size: 1.2rem; }
+        #milestone-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .rain-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0; transition: opacity 1s; }
+        .rain-active .rain-container { opacity: 1; }
+        .raindrop { position: absolute; width: 2px; height: 15px; background: rgba(255, 255, 255, 0.6); top: -20px; animation: rainFall linear infinite; }
+        @keyframes rainFall { to { transform: translateY(110vh); } }
     </style>
 </head>
 <body>
@@ -289,7 +268,8 @@
     </audio>
 
     <div class="bg-layer"></div>
-    <div class="rain-container" id="rain-container"></div> <div class="sunset-overlay" id="sunset-overlay"></div>
+    <div class="rain-container" id="rain-container"></div>
+    <div class="sunset-overlay" id="sunset-overlay"></div>
     <div class="night-overlay" id="night-overlay"></div>
     <div class="love-overlay" id="love-overlay"></div>
     <div class="overlay"></div>
@@ -322,11 +302,12 @@
     </div>
 
     <div id="pause-modal" class="modal hidden" style="z-index: 150;">
-        <div class="modal-content" style="background: rgba(255,255,255,0.9); color:#333;">
-            <h2 style="color:#2c3e50;">Pauză de Cafea ☕</h2>
-            <p style="font-size:1.1rem;">Inspiră... Expiră...<br>Aerul de munte e minunat!</p>
-            <div style="font-size:2rem; margin:20px 0;">🏔️ 🧘‍♀️</div>
-            <button class="primary-btn" onclick="togglePause()">Continuă</button>
+        <div class="modal-content" style="background: rgba(255,255,255,0.95); color:#333;">
+            <h2 style="color:#2c3e50; margin-top:0;">Pauză de Cafea ☕</h2>
+            <p style="font-size:1.1rem; color:#555;">Inspiră... Expiră...<br>Aerul de munte e minunat!</p>
+            <div style="font-size:3rem; margin:20px 0;">🏔️ 🧘‍♀️</div>
+            <button class="primary-btn" onclick="togglePause()">▶️ Continuă</button>
+            <button class="secondary-btn" style="border-color:#333; color:#333; margin-top:10px;" onclick="manualFinish()">🏳️ Încheie Jocul Acum</button>
         </div>
     </div>
 
@@ -477,7 +458,7 @@
             setSmartGreeting();
             createFireflies(); 
             createStars();
-            createRainDrops(); // Pre-generam picaturile
+            createRainDrops();
             highScoreEl.innerText = "Record: " + bestScore;
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             bgMusic.muted = isMuted;
@@ -566,7 +547,7 @@
             document.body.classList.remove('shield-active');
             document.body.classList.remove('game-paused');
             document.body.classList.remove('love-active');
-            document.body.classList.remove('rain-active'); // Stop rain
+            document.body.classList.remove('rain-active'); 
             pauseBtn.innerText = "⏸️";
 
             if(!prizePersistent) {
@@ -667,7 +648,14 @@
             }, 3500);
         }
 
-        function manualFinish() { endGame(); }
+        function manualFinish() {
+            // Daca e in pauza, scoatem pauza ca sa inchidem curat
+            if(isUserPaused) {
+                document.body.classList.remove('game-paused');
+                pauseModal.classList.add('hidden');
+            }
+            endGame(); 
+        }
 
         function spawnLoop() {
             if (!gameActive) return;
@@ -688,7 +676,6 @@
             const rand = Math.random();
             if(score < 20 && Math.random() < 0.05) spawnBird();
 
-            // LOGICA SPAWN
             if (!letterFound && rand < 0.15 && score > 1) spawnEntity('💌', 'letter');
             else if (rand < 0.02) spawnEntity('☁️', 'cloud'); 
             else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
@@ -758,7 +745,6 @@
             item.addEventListener('mousedown', interact);
             gameContainer.appendChild(item);
 
-            // Trigger Visual Rain if bad item spawns
             if(type === 'bad') {
                 document.body.classList.add('rain-active');
                 setTimeout(() => document.body.classList.remove('rain-active'), duration * 1000);
@@ -973,7 +959,6 @@
             statBears.innerText = bearsAvoided;
             statCheese.innerText = cheeseCollected;
 
-            // DYNAMIC VOUCHER RANK
             rankBadge.className = 'rank-badge'; // Reset
             if(score < 20) {
                 voucherTitle.innerText = "🎫 VOUCHER SILVER";
