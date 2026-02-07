@@ -34,10 +34,10 @@
             z-index: 0; pointer-events: none;
         }
 
-        /* EFECT DE FLASH ROSU (CAND GRESESTE) */
+        /* EFECT DE FLASH ROSU (SUBTIL) */
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(255, 0, 0, 0.4);
+            background-color: rgba(255, 0, 0, 0.15); /* MULT MAI PUTIN INTENS */
             z-index: 999; pointer-events: none; opacity: 0;
             transition: opacity 0.1s;
         }
@@ -224,6 +224,7 @@
             <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; margin:15px 0; text-align:left; font-size:0.9rem;">
                 🌲 <b>Brazi:</b> +1 punct<br>
                 💛 <b>Inima de Aur:</b> +5 puncte<br>
+                🌧️ <b>Ploaie / 🦟 Țânțari:</b> -2 puncte<br>
                 🐻 <b>URȘI:</b> -5 puncte (Fugi!)<br>
                 💌 <b>Plic Secret:</b> Deschide-l!
             </div>
@@ -318,6 +319,7 @@
             isMuted = !isMuted;
             bgMusic.muted = isMuted;
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
+            if(!isMuted && gameActive) bgMusic.play().catch(e => console.log(e));
         }
 
         function startGame() {
@@ -331,10 +333,14 @@
             if(confettiInterval) clearInterval(confettiInterval);
             if(window.confetti) window.confetti.reset();
 
-            if(!isMuted) {
-                bgMusic.volume = 0.4; 
-                bgMusic.play().catch(e => console.log("Audio waiting"));
-            }
+            // FORTAM SUNETUL AICI
+            bgMusic.muted = isMuted;
+            bgMusic.volume = 0.6; // Volum mai tare
+            bgMusic.play().then(() => {
+                console.log("Audio playing");
+            }).catch(e => {
+                console.log("Autoplay prevented, will retry on click");
+            });
             
             spawnInterval = setTimeout(spawnLoop, 700);
         }
@@ -361,8 +367,7 @@
 
             const rand = Math.random();
             
-            // --- LOGICA SPAWN ACTUALIZATA ---
-            // Scrisoarea apare mult mai usor (10% sansa daca scor > 2)
+            // --- LOGICA SPAWN ---
             if (!letterFound && rand < 0.10 && score > 2) spawnEntity('💌', 'letter');
             else if (rand < 0.05) spawnEntity('💛', 'gold');
             else if (rand < 0.10) spawnEntity('🐻', 'bear'); 
@@ -415,7 +420,7 @@
         }
 
         function triggerDamage() {
-            // Flash Rosu
+            // Flash Rosu SUBTIL
             damageOverlay.style.opacity = "1";
             setTimeout(() => { damageOverlay.style.opacity = "0"; }, 150);
             
@@ -435,12 +440,12 @@
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
             } else if (type === 'bear') {
                 updateScore(-5); 
-                triggerDamage(); // Flash + Shake
+                triggerDamage(); 
                 if (navigator.vibrate) navigator.vibrate(500);
                 showFloatingText(x, y, "MORRR! 🐻", "red"); item.innerText = "🐾";
             } else if (type === 'bad') {
                 updateScore(-2); 
-                triggerDamage(); // Flash + Shake
+                triggerDamage(); 
                 if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
                 updateScore(1); showFloatingText(x, y, "❤️", "#ff4757");
