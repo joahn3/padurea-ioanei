@@ -22,28 +22,43 @@
             display: flex; flex-direction: column; align-items: center;
             touch-action: none; user-select: none;
             background-color: #2c3e50;
+            transition: background-color 2s ease;
         }
 
+        /* STRATURI FUNDAL */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
-            background-size: cover;
-            z-index: -2;
+            background-size: cover; z-index: -3;
             animation: zoomBg 40s alternate infinite linear;
         }
         
         .sunset-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255, 140, 0, 0.5), rgba(128, 0, 128, 0.4));
+            background: linear-gradient(to bottom, rgba(255, 140, 0, 0.6), rgba(128, 0, 128, 0.5));
+            z-index: -2; pointer-events: none; opacity: 0;
+            transition: opacity 2s ease; mix-blend-mode: overlay;
+        }
+
+        .night-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
             z-index: -1; pointer-events: none; opacity: 0;
-            transition: opacity 1s ease; mix-blend-mode: overlay;
+            transition: opacity 3s ease;
         }
         
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
             z-index: 0; pointer-events: none;
         }
+
+        /* STELE (Apar noaptea) */
+        .star {
+            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
+            z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
 
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -89,13 +104,10 @@
             box-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
         }
 
-        /* --- SMART CLAIM BUTTON --- */
+        /* SMART CLAIM BUTTON */
         #claim-btn {
-            position: absolute; 
-            /* Pozitia Initiala: Centru Jos */
-            bottom: 40px; left: 50%; 
-            transform: translateX(-50%) scale(0); /* Ascuns initial */
-            
+            position: absolute; bottom: 40px; left: 50%; 
+            transform: translateX(-50%) scale(0);
             background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #fff; font-family: 'Pacifico', cursive; font-size: 1.2rem;
             padding: 15px 40px; border-radius: 50px; border: 4px solid #fff;
@@ -103,32 +115,19 @@
             z-index: 60; cursor: pointer; 
             white-space: nowrap; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            
             transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-
-        /* Stare 1: Mare si vizibil */
-        #claim-btn.visible {
-            transform: translateX(-50%) scale(1);
-            animation: pulseBtn 2s infinite;
-        }
-
-        /* Stare 2: Minimizat in colt */
+        #claim-btn.visible { transform: translateX(-50%) scale(1); animation: pulseBtn 2s infinite; }
         #claim-btn.minimized {
-            bottom: auto; left: auto; transform: none; /* Reset transform */
-            top: 120px; right: 15px; /* Pozitie sub scor */
-            
-            width: 50px; height: 50px; padding: 0;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            border: 2px solid #fff;
-            animation: none;
+            bottom: auto; left: auto; transform: none; 
+            top: 125px; right: 15px; 
+            width: 40px; height: 40px; padding: 0;
+            border-radius: 50%; font-size: 1.2rem; border: 2px solid #fff; animation: none;
+            background: rgba(255, 215, 0, 0.8); backdrop-filter: blur(5px);
         }
-        #claim-btn.minimized span { display: none; } /* Ascunde textul, lasa doar iconita */
-
+        #claim-btn.minimized span { display: none; }
         @keyframes pulseBtn { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
 
-        /* ITEMS */
         .item {
             position: absolute; font-size: 3.5rem; cursor: pointer;
             top: -120px; -webkit-tap-highlight-color: transparent; z-index: 5;
@@ -138,11 +137,11 @@
         }
         .thought-bubble {
             position: absolute; font-family: 'Pacifico', cursive;
-            color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; pointer-events: none; z-index: 2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); white-space: nowrap;
+            color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; pointer-events: none; z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); white-space: nowrap;
             animation: floatThought 8s linear forwards;
         }
-        @keyframes floatThought { 0% { transform: translateY(100vh) scale(0.8); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-20vh) scale(1); opacity: 0; } }
+        @keyframes floatThought { 0% { transform: translateY(100vh) scale(0.8); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(-20vh) scale(1); opacity: 0; } }
 
         .golden-item { font-size: 4rem !important; filter: drop-shadow(0 0 25px #FFD700); z-index: 20 !important; }
         .cheese-item { font-size: 4.2rem !important; filter: drop-shadow(0 0 15px orange); z-index: 21 !important; }
@@ -228,7 +227,7 @@
 
     <div class="bg-layer"></div>
     <div class="sunset-overlay" id="sunset-overlay"></div>
-    <div class="overlay"></div>
+    <div class="night-overlay" id="night-overlay"></div> <div class="overlay"></div>
     
     <div id="damage-overlay"></div>
 
@@ -248,7 +247,8 @@
 
         <div id="score-container">
             <div id="high-score">Record: 0</div>
-            <div id="score-label">Scor: 0</div> <div class="progress-bar-bg">
+            <div id="score-label">Scor: 0</div>
+            <div class="progress-bar-bg">
                 <div id="progress-fill"></div>
             </div>
         </div>
@@ -311,7 +311,7 @@
     <script>
         const gameContainer = document.getElementById('game-container');
         const progressFill = document.getElementById('progress-fill');
-        const scoreLabel = document.getElementById('score-label'); // NOU
+        const scoreLabel = document.getElementById('score-label');
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
         const letterModal = document.getElementById('letter-modal');
@@ -323,30 +323,39 @@
         const soundBtn = document.getElementById('sound-toggle');
         const highScoreEl = document.getElementById('high-score');
         const sunsetOverlay = document.getElementById('sunset-overlay');
+        const nightOverlay = document.getElementById('night-overlay');
         const claimBtn = document.getElementById('claim-btn');
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
+        // Incarca preferinta de sunet
+        let savedMute = localStorage.getItem('ioana_game_muted');
+        let isMuted = savedMute === 'true';
+
         let gameActive = false;
         let isPaused = false;
         let spawnInterval;
         let thoughtInterval;
         let confettiInterval; 
         let letterFound = false; 
-        let isMuted = false;
         let comboCount = 0;
         let prizeUnlocked = false;
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
-        
         const thoughts = ["Mi-e dor de tine...", "Ești minunată...", "Te iubesc! ❤️", "Valea Doftanei e mai frumoasă cu tine...", "Abia aștept să te văd!", "Relaxează-te..."];
 
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
         window.onload = function() {
             createFireflies(); 
+            createStars(); // Generam stelele pentru noapte
             highScoreEl.innerText = "Record: " + bestScore;
+            
+            // Setare initiala buton sunet
+            soundBtn.innerText = isMuted ? "🔇" : "🔊";
+            bgMusic.muted = isMuted;
+
             const texts = ["Se încarcă aerul curat...", "Se alungă țânțarii...", "Se pregătește masajul...", "Gata de aventură!"];
             let i = 0;
             const interval = setInterval(() => {
@@ -368,6 +377,7 @@
         function toggleSound() {
             isMuted = !isMuted;
             bgMusic.muted = isMuted;
+            localStorage.setItem('ioana_game_muted', isMuted); // Salvam preferinta
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             if(!isMuted && gameActive) bgMusic.play().catch(e => console.log(e));
         }
@@ -376,9 +386,12 @@
             score = 0; comboCount = 0; updateScore(0);
             gameActive = true; isPaused = false; letterFound = false;
             prizeUnlocked = false;
-            sunsetOverlay.style.opacity = "0"; 
             
-            // RESET BUTON
+            // Reset Atmosphere
+            sunsetOverlay.style.opacity = "0"; 
+            nightOverlay.style.opacity = "0";
+            
+            // Reset UI
             claimBtn.classList.remove('visible'); 
             claimBtn.classList.remove('minimized'); 
             
@@ -401,16 +414,32 @@
         function updateScore(val) {
             score += val; if(score < 0) score = 0;
             
-            // UPDATE TEXT SCOR
             scoreLabel.innerText = "Scor: " + score;
 
             let percentage = (score / targetScore) * 100;
             if(percentage > 100) percentage = 100;
             progressFill.style.width = percentage + '%';
             
-            let opacity = (score / targetScore) * 0.8; 
-            if(opacity > 0.8) opacity = 0.8;
-            sunsetOverlay.style.opacity = opacity;
+            // --- LOGICA ZI / NOAPTE ---
+            // 0 - 20: Zi
+            // 20 - 40: Apus (Sunset overlay creste)
+            // 40+: Noapte (Night overlay creste peste sunset)
+            
+            if (score > 15) {
+                let sunsetOp = (score - 15) / 15; // De la 15 la 30 se face full sunset
+                if(sunsetOp > 1) sunsetOp = 1;
+                sunsetOverlay.style.opacity = sunsetOp;
+            } else {
+                sunsetOverlay.style.opacity = 0;
+            }
+
+            if (score > 35) {
+                let nightOp = (score - 35) / 15; // De la 35 la 50 se face full noapte
+                if(nightOp > 0.9) nightOp = 0.9;
+                nightOverlay.style.opacity = nightOp;
+            } else {
+                nightOverlay.style.opacity = 0;
+            }
 
             if(score >= targetScore && !prizeUnlocked) {
                 unlockPrize();
@@ -424,11 +453,12 @@
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "Premiu Deblocat! 🎁", "#fff");
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
 
-            // Dupa 3 secunde, minimizam butonul
             setTimeout(() => {
                 claimBtn.classList.remove('visible');
                 claimBtn.classList.add('minimized');
-            }, 3000);
+                // Adaugam un tooltip mic
+                showFloatingText(window.innerWidth - 60, 100, "S-a pus aici!", "#fff");
+            }, 3500);
         }
 
         function manualFinish() {
@@ -445,7 +475,8 @@
             let speed = 700;
             if(score > 10) speed = 600;
             if(score > 20) speed = 500;
-            if(score > 30) speed = 400; 
+            if(score > 30) speed = 450; 
+            if(score > 50) speed = 400; // Turbo noaptea
 
             const rand = Math.random();
             
@@ -596,7 +627,7 @@
         }
 
         function createFireflies() {
-            for(let i=0; i<15; i++) {
+            for(let i=0; i<12; i++) {
                 const fly = document.createElement('div');
                 fly.classList.add('firefly');
                 fly.style.left = Math.random() * 100 + '%';
@@ -604,6 +635,17 @@
                 fly.style.animationDuration = (Math.random() * 10 + 10) + 's';
                 fly.style.animationDelay = (Math.random() * 5) + 's';
                 document.body.appendChild(fly);
+            }
+        }
+
+        function createStars() {
+            for(let i=0; i<30; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 60 + '%'; // Doar in partea de sus
+                star.style.animationDelay = (Math.random() * 2) + 's';
+                document.getElementById('night-overlay').appendChild(star);
             }
         }
 
