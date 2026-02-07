@@ -25,40 +25,50 @@
             transition: background-color 2s ease;
         }
 
-        /* STRATURI FUNDAL */
+        /* FUNDALURI */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
             background-size: cover; z-index: -3;
             animation: zoomBg 40s alternate infinite linear;
         }
-        
         .sunset-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(255, 140, 0, 0.6), rgba(128, 0, 128, 0.5));
             z-index: -2; pointer-events: none; opacity: 0;
             transition: opacity 2s ease; mix-blend-mode: overlay;
         }
-
         .night-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
             z-index: -1; pointer-events: none; opacity: 0;
             transition: opacity 3s ease;
         }
-        
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
             z-index: 0; pointer-events: none;
         }
 
-        /* STELE (Apar noaptea) */
+        /* STELE */
         .star {
             position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
             z-index: -1; opacity: 0; animation: twinkle 2s infinite ease-in-out;
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+
+        /* MAGIC TRAIL (PRAF DE ZANE) */
+        .trail-dot {
+            position: absolute; width: 6px; height: 6px;
+            background: rgba(255, 255, 255, 0.8); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            box-shadow: 0 0 10px #fff, 0 0 20px #FFD700;
+            animation: fadeTrail 0.8s linear forwards;
+        }
+        @keyframes fadeTrail {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
 
         #damage-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -104,25 +114,20 @@
             box-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
         }
 
-        /* SMART CLAIM BUTTON */
         #claim-btn {
-            position: absolute; bottom: 40px; left: 50%; 
-            transform: translateX(-50%) scale(0);
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) scale(0);
             background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #fff; font-family: 'Pacifico', cursive; font-size: 1.2rem;
             padding: 15px 40px; border-radius: 50px; border: 4px solid #fff;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-            z-index: 60; cursor: pointer; 
-            white-space: nowrap; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
+            z-index: 60; cursor: pointer; white-space: nowrap; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
             display: flex; align-items: center; justify-content: center; gap: 10px;
             transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
         #claim-btn.visible { transform: translateX(-50%) scale(1); animation: pulseBtn 2s infinite; }
         #claim-btn.minimized {
-            bottom: auto; left: auto; transform: none; 
-            top: 125px; right: 15px; 
-            width: 40px; height: 40px; padding: 0;
-            border-radius: 50%; font-size: 1.2rem; border: 2px solid #fff; animation: none;
+            bottom: auto; left: auto; transform: none; top: 125px; right: 15px; 
+            width: 40px; height: 40px; padding: 0; border-radius: 50%; font-size: 1.2rem; border: 2px solid #fff; animation: none;
             background: rgba(255, 215, 0, 0.8); backdrop-filter: blur(5px);
         }
         #claim-btn.minimized span { display: none; }
@@ -227,7 +232,8 @@
 
     <div class="bg-layer"></div>
     <div class="sunset-overlay" id="sunset-overlay"></div>
-    <div class="night-overlay" id="night-overlay"></div> <div class="overlay"></div>
+    <div class="night-overlay" id="night-overlay"></div>
+    <div class="overlay"></div>
     
     <div id="damage-overlay"></div>
 
@@ -328,7 +334,6 @@
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
-        // Incarca preferinta de sunet
         let savedMute = localStorage.getItem('ioana_game_muted');
         let isMuted = savedMute === 'true';
 
@@ -347,12 +352,37 @@
 
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
 
+        // --- BROWSER TITLE TRICK ---
+        const originalTitle = document.title;
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                document.title = "Mi-e dor de tine... 🥺";
+            } else {
+                document.title = originalTitle;
+            }
+        });
+
+        // --- MAGIC TOUCH TRAIL ---
+        window.addEventListener('touchmove', function(e) {
+            createTrail(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('mousemove', function(e) {
+            createTrail(e.clientX, e.clientY);
+        });
+
+        function createTrail(x, y) {
+            const dot = document.createElement('div');
+            dot.classList.add('trail-dot');
+            dot.style.left = x + 'px';
+            dot.style.top = y + 'px';
+            document.body.appendChild(dot);
+            setTimeout(() => dot.remove(), 800);
+        }
+
         window.onload = function() {
             createFireflies(); 
-            createStars(); // Generam stelele pentru noapte
+            createStars();
             highScoreEl.innerText = "Record: " + bestScore;
-            
-            // Setare initiala buton sunet
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             bgMusic.muted = isMuted;
 
@@ -377,7 +407,7 @@
         function toggleSound() {
             isMuted = !isMuted;
             bgMusic.muted = isMuted;
-            localStorage.setItem('ioana_game_muted', isMuted); // Salvam preferinta
+            localStorage.setItem('ioana_game_muted', isMuted);
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
             if(!isMuted && gameActive) bgMusic.play().catch(e => console.log(e));
         }
@@ -386,12 +416,9 @@
             score = 0; comboCount = 0; updateScore(0);
             gameActive = true; isPaused = false; letterFound = false;
             prizeUnlocked = false;
-            
-            // Reset Atmosphere
             sunsetOverlay.style.opacity = "0"; 
             nightOverlay.style.opacity = "0";
             
-            // Reset UI
             claimBtn.classList.remove('visible'); 
             claimBtn.classList.remove('minimized'); 
             
@@ -413,33 +440,23 @@
 
         function updateScore(val) {
             score += val; if(score < 0) score = 0;
-            
             scoreLabel.innerText = "Scor: " + score;
 
             let percentage = (score / targetScore) * 100;
             if(percentage > 100) percentage = 100;
             progressFill.style.width = percentage + '%';
             
-            // --- LOGICA ZI / NOAPTE ---
-            // 0 - 20: Zi
-            // 20 - 40: Apus (Sunset overlay creste)
-            // 40+: Noapte (Night overlay creste peste sunset)
-            
             if (score > 15) {
-                let sunsetOp = (score - 15) / 15; // De la 15 la 30 se face full sunset
+                let sunsetOp = (score - 15) / 15; 
                 if(sunsetOp > 1) sunsetOp = 1;
                 sunsetOverlay.style.opacity = sunsetOp;
-            } else {
-                sunsetOverlay.style.opacity = 0;
-            }
+            } else { sunsetOverlay.style.opacity = 0; }
 
             if (score > 35) {
-                let nightOp = (score - 35) / 15; // De la 35 la 50 se face full noapte
+                let nightOp = (score - 35) / 15; 
                 if(nightOp > 0.9) nightOp = 0.9;
                 nightOverlay.style.opacity = nightOp;
-            } else {
-                nightOverlay.style.opacity = 0;
-            }
+            } else { nightOverlay.style.opacity = 0; }
 
             if(score >= targetScore && !prizeUnlocked) {
                 unlockPrize();
@@ -456,27 +473,21 @@
             setTimeout(() => {
                 claimBtn.classList.remove('visible');
                 claimBtn.classList.add('minimized');
-                // Adaugam un tooltip mic
                 showFloatingText(window.innerWidth - 60, 100, "S-a pus aici!", "#fff");
             }, 3500);
         }
 
-        function manualFinish() {
-            endGame();
-        }
+        function manualFinish() { endGame(); }
 
         function spawnLoop() {
             if (!gameActive) return;
-            if (isPaused) {
-                spawnInterval = setTimeout(spawnLoop, 100); 
-                return;
-            }
+            if (isPaused) { spawnInterval = setTimeout(spawnLoop, 100); return; }
 
             let speed = 700;
             if(score > 10) speed = 600;
             if(score > 20) speed = 500;
             if(score > 30) speed = 450; 
-            if(score > 50) speed = 400; // Turbo noaptea
+            if(score > 50) speed = 400;
 
             const rand = Math.random();
             
@@ -491,7 +502,6 @@
                 const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
                 spawnEntity(goodIcon, 'good');
             }
-
             spawnInterval = setTimeout(spawnLoop, speed);
         }
 
@@ -541,8 +551,7 @@
                     lifeTime -= 100;
                     if(lifeTime <= 0) { 
                         if(item.parentNode) item.remove(); 
-                        comboCount = 0; 
-                        clearInterval(checkInterval); 
+                        comboCount = 0; clearInterval(checkInterval); 
                     }
                 }
             }, 100);
@@ -561,11 +570,8 @@
 
             if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
             
-            if(type === 'good' || type === 'gold' || type === 'cheese') {
-                comboCount++;
-            } else {
-                comboCount = 0; 
-            }
+            if(type === 'good' || type === 'gold' || type === 'cheese') comboCount++;
+            else comboCount = 0; 
 
             let comboText = "";
             if(comboCount >= 3) comboText = " x" + comboCount;
@@ -578,13 +584,11 @@
                 updateScore(5); showFloatingText(x, y, "+5 IUBIRE!" + comboText, "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
             } else if (type === 'bear') {
-                updateScore(-5); 
-                triggerDamage(); 
+                updateScore(-5); triggerDamage(); 
                 if (navigator.vibrate) navigator.vibrate(500);
                 showFloatingText(x, y, "MORRR! 🐻", "red"); item.innerText = "🐾";
             } else if (type === 'bad') {
-                updateScore(-2); 
-                triggerDamage(); 
+                updateScore(-2); triggerDamage(); 
                 if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
                 updateScore(1); 
@@ -611,17 +615,10 @@
         }
 
         function triggerLoveRain() {
-            var duration = 2000;
-            var end = Date.now() + duration;
+            var duration = 2000; var end = Date.now() + duration;
             (function frame() {
-                confetti({
-                    particleCount: 5, angle: 60, spread: 55, origin: { x: 0 },
-                    colors: ['#ff6b6b', '#ff9a9e'], shapes: ['circle'], zIndex: 9999
-                });
-                confetti({
-                    particleCount: 5, angle: 120, spread: 55, origin: { x: 1 },
-                    colors: ['#ff6b6b', '#ff9a9e'], shapes: ['circle'], zIndex: 9999
-                });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff6b6b', '#ff9a9e'], shapes: ['circle'], zIndex: 9999 });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff6b6b', '#ff9a9e'], shapes: ['circle'], zIndex: 9999 });
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
         }
@@ -643,22 +640,19 @@
                 const star = document.createElement('div');
                 star.classList.add('star');
                 star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 60 + '%'; // Doar in partea de sus
+                star.style.top = Math.random() * 60 + '%';
                 star.style.animationDelay = (Math.random() * 2) + 's';
                 document.getElementById('night-overlay').appendChild(star);
             }
         }
 
         function updateCountdown() {
-            const nowTime = new Date().getTime();
-            const diff = returnDate - nowTime;
+            const nowTime = new Date().getTime(); const diff = returnDate - nowTime;
             if (diff < 0) { countdownTimer.innerText = "Te aștept acasă!"; return; }
-            
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
             countdownTimer.innerText = `${days}z ${hours}h ${minutes}m ${seconds}s`;
         }
 
@@ -684,10 +678,7 @@
             }
 
             document.querySelectorAll('.item').forEach(el => el.remove());
-            setTimeout(() => { 
-                endScreen.classList.remove('hidden'); 
-                triggerConfetti(); 
-            }, 300);
+            setTimeout(() => { endScreen.classList.remove('hidden'); triggerConfetti(); }, 300);
         }
         
         function sendWhatsapp() {
