@@ -50,7 +50,18 @@
             z-index: 0; pointer-events: none;
         }
 
-        /* SCUT PROTECTOR */
+        /* STATISTICI FINALE (NOU) */
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 15px 0; width: 100%;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px;
+            text-align: center; font-size: 0.8rem; color: #eee;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-val { font-weight: bold; font-size: 1.1rem; color: #ffd700; display: block; }
+
         .shield-active {
             box-shadow: inset 0 0 50px #00BFFF, inset 0 0 20px #fff;
             animation: pulseShield 1s infinite alternate;
@@ -302,6 +313,11 @@
                 <p style="font-size:0.7rem; color:#aaa; margin-top:5px;">Serie Unică: LOVE-2026</p>
             </div>
             
+            <div class="stats-grid">
+                <div class="stat-box">🐻 Urși Păcăliți<br><span class="stat-val" id="stat-bears">0</span></div>
+                <div class="stat-box">🧀 Cașcavea<br><span class="stat-val" id="stat-cheese">0</span></div>
+            </div>
+
             <div id="countdown-container">
                 <p style="margin:0; font-size:0.8rem; color:#ccc; margin-bottom:5px;">Revederea în:</p>
                 <div id="countdown-timer">Calculez...</div>
@@ -333,6 +349,8 @@
         const nightOverlay = document.getElementById('night-overlay');
         const claimBtn = document.getElementById('claim-btn');
         const typewriterEl = document.getElementById('typewriter-text');
+        const statBears = document.getElementById('stat-bears');
+        const statCheese = document.getElementById('stat-cheese');
         
         let score = 0;
         let bestScore = localStorage.getItem('ioana_best_score') || 0;
@@ -352,14 +370,31 @@
         let isShielded = false;
         let typewriterTimeout;
         
+        // STATS
+        let bearsAvoided = 0;
+        let cheeseCollected = 0;
+        
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         const thoughts = ["Mi-e dor de tine...", "Ești minunată...", "Te iubesc! ❤️", "Valea Doftanei e mai frumoasă cu tine...", "Abia aștept să te văd!", "Relaxează-te..."];
         
-        // MESAJUL CARE SE SCRIE SINGUR
         const fullLetterText = "Hey, Ioana! 🌲<br><br>Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>Distracție plăcută în continuare, mănâncă ceva bun (poate o cașcavea?) și... <b>ai grijă la urși!</b> 🐻<br><br>Te pupă,<br><b>Ionuț</b>";
 
         const returnDate = new Date(2026, 1, 8, 19, 0, 0); 
+
+        // AUDIO CONTEXT (SYNTH)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, type, duration) {
+             if(isMuted) return;
+             if(audioCtx.state === 'suspended') audioCtx.resume();
+             const osc = audioCtx.createOscillator();
+             const gain = audioCtx.createGain();
+             osc.type = type; osc.frequency.value = freq;
+             osc.connect(gain); gain.connect(audioCtx.destination);
+             osc.start();
+             gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+             osc.stop(audioCtx.currentTime + duration);
+        }
 
         const originalTitle = document.title;
         document.addEventListener('visibilitychange', () => {
@@ -414,6 +449,7 @@
                 updateScore(30); 
                 score = 30; scoreLabel.innerText = "Scor: 30";
                 showFloatingText(window.innerWidth/2, window.innerHeight/2, "GOD MODE ACTIVATED ⚡", "#FFD700");
+                playTone(800, 'square', 0.2);
             }
             setTimeout(() => cheatClicks = 0, 1000); 
         }
@@ -423,11 +459,16 @@
             bgMusic.muted = isMuted;
             localStorage.setItem('ioana_game_muted', isMuted);
             soundBtn.innerText = isMuted ? "🔇" : "🔊";
-            if(!isMuted && gameActive) bgMusic.play().catch(e => console.log(e));
+            if(!isMuted) {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                if(gameActive) bgMusic.play().catch(e => console.log(e));
+            }
         }
 
         function startGame() {
             score = 0; comboCount = 0; updateScore(0);
+            bearsAvoided = 0; cheeseCollected = 0; // RESET STATS
+            
             gameActive = true; isPaused = false; letterFound = false;
             isShielded = false; document.body.classList.remove('shield-active');
             
@@ -451,6 +492,7 @@
             if(thoughtInterval) clearInterval(thoughtInterval);
             if(window.confetti) window.confetti.reset();
 
+            if(audioCtx.state === 'suspended') audioCtx.resume();
             bgMusic.muted = isMuted;
             bgMusic.volume = 0.6; 
             bgMusic.play().catch(e => console.log("Audio waiting"));
@@ -490,6 +532,8 @@
             claimBtn.classList.remove('minimized');
             claimBtn.classList.add('visible'); 
             triggerLoveRain(); 
+            playTone(600, 'sine', 0.5); // Victory sound
+            
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "Premiu Deblocat! 🎁", "#fff");
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
 
@@ -515,7 +559,7 @@
             const rand = Math.random();
             
             if (!letterFound && rand < 0.10 && score > 2) spawnEntity('💌', 'letter');
-            else if (rand < 0.03) spawnEntity('☔', 'umbrella'); // UMBRELA RARA
+            else if (rand < 0.03) spawnEntity('☔', 'umbrella'); 
             else if (rand < 0.04) spawnEntity('🧀', 'cheese'); 
             else if (rand < 0.05) spawnEntity('💛', 'gold');
             else if (rand < 0.10) spawnEntity('🐻', 'bear'); 
@@ -586,6 +630,7 @@
         function activateShield() {
             isShielded = true;
             document.body.classList.add('shield-active');
+            playTone(600, 'sine', 0.5); // Shield Sound
             showFloatingText(window.innerWidth/2, window.innerHeight/2, "SCUT ACTIV! 🛡️", "#00BFFF");
             setTimeout(() => {
                 isShielded = false;
@@ -595,6 +640,7 @@
 
         function triggerDamage() {
             damageOverlay.style.opacity = "1";
+            playTone(150, 'sawtooth', 0.3); // Damage Sound
             setTimeout(() => { damageOverlay.style.opacity = "0"; }, 150);
             document.body.classList.add('shake');
             setTimeout(() => document.body.classList.remove('shake'), 500);
@@ -617,17 +663,23 @@
                 updateScore(2); 
             }
             else if (type === 'cheese') {
-                updateScore(10); showFloatingText(x, y, "Mmm, Cașcavea!" + comboText, "orange");
+                cheeseCollected++;
+                updateScore(10); 
+                playTone(800, 'triangle', 0.2); // Ding!
+                showFloatingText(x, y, "Mmm, Cașcavea!" + comboText, "orange");
                 if (navigator.vibrate) navigator.vibrate([100,50,100]);
             }
             else if (type === 'gold') {
-                updateScore(5); showFloatingText(x, y, "+5 IUBIRE!" + comboText, "#FFD700");
+                updateScore(5); 
+                playTone(1000, 'sine', 0.3); // High Ding!
+                showFloatingText(x, y, "+5 IUBIRE!" + comboText, "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
             } 
             else if (type === 'bear') {
+                bearsAvoided++; // Contam ca intalnire
                 if(isShielded) {
                     showFloatingText(x, y, "Respins! 🛡️", "#00BFFF");
-                    // Efect bounce
+                    playTone(400, 'square', 0.1);
                     item.style.transition = "transform 0.5s";
                     item.style.transform = "translateY(-100px) rotate(360deg)";
                     setTimeout(() => item.remove(), 500);
@@ -640,6 +692,7 @@
             else if (type === 'bad') {
                 if(isShielded) {
                     showFloatingText(x, y, "Respins! 🛡️", "#00BFFF");
+                    playTone(400, 'square', 0.1);
                     item.style.opacity = 0; 
                     return;
                 }
@@ -647,12 +700,13 @@
                 if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
                 updateScore(1); 
+                playTone(440 + (comboCount * 50), 'sine', 0.1); // Pitch urca cu combo
                 const msgs = ["❤️", "Super!", "Yay!", "Bravo!"];
                 const msg = msgs[Math.floor(Math.random()*msgs.length)] + (comboCount > 2 ? comboText : "");
                 showFloatingText(x, y, msg, "#ff4757");
             }
             
-            if(type !== 'bear') { // Ursul are animatie speciala la scut
+            if(type !== 'bear') { 
                 item.style.transition = "all 0.1s"; item.style.transform = "scale(1.5)"; item.style.opacity = "0";
                 setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
             }
@@ -661,24 +715,14 @@
         function typeWriter(text, elementId, speed) {
             let i = 0;
             let target = document.getElementById(elementId);
-            target.innerHTML = ""; // Clear existing
-            
+            target.innerHTML = ""; 
             function type() {
                 if (i < text.length) {
-                    // Handle HTML tags (don't type them char by char)
                     if(text.charAt(i) === '<') {
                         let tag = '';
-                        while(text.charAt(i) !== '>') {
-                            tag += text.charAt(i);
-                            i++;
-                        }
-                        tag += '>';
-                        i++;
-                        target.innerHTML += tag;
-                    } else {
-                        target.innerHTML += text.charAt(i);
-                        i++;
-                    }
+                        while(text.charAt(i) !== '>') { tag += text.charAt(i); i++; }
+                        tag += '>'; i++; target.innerHTML += tag;
+                    } else { target.innerHTML += text.charAt(i); i++; }
                     typewriterTimeout = setTimeout(type, speed);
                 }
             }
@@ -689,18 +733,14 @@
             isPaused = true; 
             document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused'); 
             letterModal.classList.remove('hidden'); 
-            
-            // Start Typewriter
             typeWriter(fullLetterText, 'typewriter-text', 30);
         }
 
         function closeLetter() { 
             letterModal.classList.add('hidden'); 
             isPaused = false; 
-            clearTimeout(typewriterTimeout); // Stop typing if closed early
-            // Show full text immediately next time (optional, or reset)
+            clearTimeout(typewriterTimeout); 
             document.getElementById('typewriter-text').innerHTML = fullLetterText; 
-            
             document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running'); 
         }
 
@@ -778,6 +818,10 @@
                 localStorage.setItem('ioana_best_score', bestScore);
                 highScoreEl.innerText = "Record: " + bestScore;
             }
+            
+            // UPDATE STATS
+            statBears.innerText = bearsAvoided;
+            statCheese.innerText = cheeseCollected;
 
             document.querySelectorAll('.item').forEach(el => el.remove());
             setTimeout(() => { endScreen.classList.remove('hidden'); triggerConfetti(); }, 300);
