@@ -14,7 +14,6 @@
             padding: 0;
             overflow: hidden;
             font-family: 'Quicksand', sans-serif;
-            /* Fundal Munte/Padure */
             background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed; 
             background-size: cover;
             height: 100vh;
@@ -27,11 +26,11 @@
 
         body::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.3); 
             z-index: 1;
         }
 
-        h1, #game-container, .modal { z-index: 5; }
+        h1, #game-container, .modal, #loading-screen { z-index: 5; }
 
         h1 {
             font-family: 'Pacifico', cursive;
@@ -65,6 +64,7 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
 
+        /* ELEMENTE JOC */
         .item {
             position: absolute;
             font-size: 3.5rem;
@@ -89,6 +89,13 @@
             z-index: 25 !important;
         }
 
+        /* STIL PENTRU URS */
+        .bear-item {
+            font-size: 5rem !important; /* Ursul e mare */
+            z-index: 18 !important;
+            filter: drop-shadow(0 0 10px red); /* Are o aură periculoasă */
+        }
+
         @keyframes floatDown {
             0%, 100% { transform: translateX(0); }
             50% { transform: translateX(20px); }
@@ -98,6 +105,7 @@
             to { transform: translateY(110vh) rotate(360deg); }
         }
 
+        /* MODALE */
         .modal {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -114,6 +122,24 @@
             backdrop-filter: blur(8px);
         }
 
+        /* LOADING SCREEN */
+        #loading-screen {
+            background: #2c3e50;
+            z-index: 200;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b6b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-text { font-size: 1.2rem; font-family: 'Quicksand'; color: #ddd; }
+
+        /* SCRISOARE */
         #letter-modal {
             background: #fffdf0; 
             color: #333;
@@ -125,7 +151,7 @@
         
         .handwritten-text {
             font-family: 'Pacifico', cursive;
-            font-size: 1.2rem; /* Putin mai mic textul sa incapa tot */
+            font-size: 1.2rem;
             line-height: 1.5;
             margin-bottom: 30px;
             color: #2c3e50;
@@ -144,6 +170,7 @@
             cursor: pointer;
         }
 
+        /* VOUCHER */
         .voucher-card {
             background: white;
             color: #333;
@@ -203,6 +230,15 @@
         button:active { transform: scale(0.95); }
         .hidden { display: none !important; }
 
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-15px); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-15px); }
+            80% { transform: translateX(15px); }
+        }
+
         .floating-msg {
             position: absolute;
             font-weight: bold;
@@ -225,19 +261,25 @@
         <source src="https://actions.google.com/sounds/v1/ambiences/forest_morning.ogg" type="audio/ogg">
     </audio>
 
+    <div id="loading-screen" class="modal">
+        <div class="loader"></div>
+        <p id="loading-text">Se încarcă aerul curat...</p>
+    </div>
+
     <h1>🌲 Pădurea Ioanei 🌲</h1>
     
     <div id="game-container">
         <div id="score-board">Scor: 0</div>
     </div>
 
-    <div id="start-screen" class="modal">
+    <div id="start-screen" class="modal hidden">
         <h2>Salut, Ioana! ❤️</h2>
         <p>Am auzit că îți place la munte.<br>Hai să ne jucăm puțin!</p>
         <p style="font-size: 0.9rem; color: #eee; margin-top: 20px; line-height: 1.6;">
-            🌲 Adună Brazi (+1)<br>
-            💛 Găsește Inima de Aur (+5)<br>
-            💌 <b>Caută Plicul Secret...</b>
+            🌲 Brazi (+1)<br>
+            💛 Inima de Aur (+5)<br>
+            🐻 <b>ATENȚIE LA URȘI! (-5)</b><br>
+            💌 Caută Plicul Secret...
         </p>
         <button class="primary-btn" onclick="startGame()">Start Vacanță!</button>
     </div>
@@ -249,7 +291,7 @@
                 Hey, Campiono! 🌲<br><br>
                 Văd că te descurci de minune să prinzi brazii, dar sper că nu te-a prins ploaia reală!<br><br>
                 M-am gândit să îți fac o mică surpriză ca să nu uiți de mine cât timp ești ocupată cu relaxarea.<br><br>
-                Distracție plăcută în continuare, mănâncă ceva bun și pentru mine și ai grijă la urși! 🐻<br><br>
+                Distracție plăcută în continuare, mănâncă ceva bun și pentru mine și... <b>ai grijă la urși!</b> 🐻<br><br>
                 Te pupă,<br>
                 <b>Ionuț</b>
             </div>
@@ -265,7 +307,7 @@
             <p>La întoarcere!</p>
         </div>
         
-        <p>Bravo! Ai câștigat!</p>
+        <p>Bravo! Ai supraviețuit!</p>
         
         <button class="whatsapp-btn" onclick="sendWhatsapp()">
             Revendică Premiul pe WhatsApp 💬
@@ -280,6 +322,8 @@
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
         const letterModal = document.getElementById('letter-modal');
+        const loadingScreen = document.getElementById('loading-screen');
+        const loadingText = document.getElementById('loading-text');
         const bgMusic = document.getElementById('bg-music');
         
         let score = 0;
@@ -291,6 +335,27 @@
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         
+        // Simulam incarcarea la inceput
+        window.onload = function() {
+            const texts = [
+                "Se încarcă aerul curat...", 
+                "Se alungă țânțarii...", 
+                "Se pregătește masajul...", 
+                "Gata de aventură!"
+            ];
+            let i = 0;
+            const interval = setInterval(() => {
+                i++;
+                if(i < texts.length) {
+                    loadingText.innerText = texts[i];
+                } else {
+                    clearInterval(interval);
+                    loadingScreen.classList.add('hidden');
+                    startScreen.classList.remove('hidden');
+                }
+            }, 800); // Schimba textul la fiecare 0.8 secunde
+        };
+
         const targetScore = 30; 
 
         function startGame() {
@@ -321,7 +386,7 @@
 
             const rand = Math.random();
             
-            // 1. Scrisoarea (rara)
+            // 1. Scrisoarea (O singura data)
             if (!letterFound && rand < 0.03 && score > 5) { 
                 spawnEntity('💌', 'letter');
                 return;
@@ -331,13 +396,19 @@
                 spawnEntity('💛', 'gold');
                 return;
             }
-            // 3. Ploaie (medie)
+            // 3. URSUL (Foarte rar si periculos) - 3% sanse
+            if (rand < 0.03) {
+                spawnEntity('🐻', 'bear'); // URSUL
+                return;
+            }
+
+            // 4. Ploaie (medie)
             if (rand < 0.25) {
                 const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
                 spawnEntity(badIcon, 'bad');
                 return;
             }
-            // 4. Normal
+            // 5. Normal
             const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
             spawnEntity(goodIcon, 'good');
         }
@@ -350,12 +421,14 @@
             
             if(type === 'gold') item.classList.add('golden-item');
             if(type === 'letter') item.classList.add('letter-item');
+            if(type === 'bear') item.classList.add('bear-item'); // Stil urs
             if(type === 'bad') item.style.zIndex = "15";
 
             item.style.left = Math.random() * 80 + 10 + '%';
             
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
+            if(type === 'bear') duration = 2; // Ursul e rapid!
             
             item.style.animationDuration = duration + 's';
 
@@ -397,8 +470,18 @@
                 updateScore(5);
                 showFloatingText(x, y, "+5 IUBIRE!", "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
-            } else if (type === 'bad') {
-                updateScore(-3);
+            } 
+            else if (type === 'bear') {
+                // 🐻 A PRINS URSUL!
+                updateScore(-5); // Penalizare mare
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 500);
+                if (navigator.vibrate) navigator.vibrate(500); // Vibratie lunga
+                showFloatingText(x, y, "MORRR! 🐻", "red");
+                item.innerText = "🐾";
+            }
+            else if (type === 'bad') {
+                updateScore(-2);
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
                 if (navigator.vibrate) navigator.vibrate(200);
@@ -450,9 +533,7 @@
         }
 
         function sendWhatsapp() {
-            // Textul care se trimite pe WhatsApp (Sincronizat cu premiul)
-            let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶";
-            
+            let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶 (Și m-am ferit de urși!)";
             let encodedText = encodeURIComponent(text);
             window.open(`https://wa.me/?text=${encodedText}`, '_blank');
         }
