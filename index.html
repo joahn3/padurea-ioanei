@@ -14,7 +14,9 @@
             padding: 0;
             overflow: hidden;
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 40%, #228B22 100%);
+            /* AICI SCHIMBI FUNDALUL CU O POZA DACA VREI */
+            background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed; 
+            background-size: cover;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -23,25 +25,27 @@
             user-select: none;
         }
 
-        /* Flash effect cand prinde inima */
-        #flash-overlay {
+        /* Adaugam un strat semi-transparent peste poza ca sa se vada textul bine */
+        body::before {
+            content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 999;
-            transition: opacity 0.2s;
+            background: rgba(0, 0, 0, 0.3); /* Intunecam putin poza */
+            z-index: 1;
         }
+
+        /* Tot continutul trebuie sa fie peste stratul intunecat (z-index > 1) */
+        h1, #game-container, .modal { z-index: 5; }
 
         h1 {
             font-family: 'Pacifico', cursive;
-            color: #2c3e50;
-            text-shadow: 2px 2px white;
+            color: #fff;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
             margin-top: 15px;
-            font-size: 1.6rem;
-            z-index: 10;
+            font-size: 1.8rem;
             pointer-events: none;
+            position: relative;
+            z-index: 10;
         }
 
         #game-container {
@@ -49,22 +53,22 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 5;
         }
 
         #score-board {
             position: absolute;
-            top: 10px;
-            right: 20px;
+            top: 10px; right: 20px;
             font-size: 1.2rem;
             font-weight: bold;
             color: #fff;
-            background: rgba(0, 100, 0, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
             padding: 8px 15px;
             border-radius: 20px;
             z-index: 20;
             pointer-events: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            border: 2px solid white;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .item {
@@ -75,42 +79,30 @@
             top: -100px;
             -webkit-tap-highlight-color: transparent;
             z-index: 5;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
         }
 
-        /* Stil special pentru Inima de Aur */
         .golden-item {
-            font-size: 4.5rem !important; /* Mai mare */
-            filter: drop-shadow(0 0 10px gold);
-            animation: fall 2s linear forwards !important; /* Cade mai repede! */
+            font-size: 4.5rem !important;
+            filter: drop-shadow(0 0 15px gold);
             z-index: 20 !important;
         }
-
-        .floating-msg {
-            position: absolute;
-            font-weight: bold;
-            color: #ff4757;
-            font-size: 1.3rem;
-            pointer-events: none;
-            z-index: 50;
-            text-shadow: 2px 2px 0 #fff;
-            animation: floatUp 1s ease-out forwards;
-            white-space: nowrap;
+        
+        /* Stil pentru Scrisoare */
+        .letter-item {
+            font-size: 4rem !important;
+            filter: drop-shadow(0 0 10px white);
+            animation: floatDown 4s ease-in-out infinite, fall 6s linear forwards !important;
+            z-index: 25 !important;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-60px) scale(1.3); opacity: 0; }
+        @keyframes floatDown {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
         }
 
         @keyframes fall {
             to { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
         }
 
         .modal {
@@ -126,60 +118,59 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
-        .modal h2 {
+        /* Stil special pentru Scrisoarea Deschisa */
+        #letter-modal {
+            background: rgba(255, 255, 250, 0.95);
+            color: #333;
+            padding: 40px 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+        
+        .handwritten-text {
             font-family: 'Pacifico', cursive;
-            font-size: 2.2rem;
-            color: #90EE90;
-            margin-bottom: 10px;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #444;
+            max-width: 600px;
         }
 
-        /* STIL PENTRU VOUCHER */
+        .close-letter-btn {
+            background-color: #333;
+            color: white;
+            font-size: 1rem;
+            padding: 10px 30px;
+        }
+
+        /* Voucher Final */
         .voucher-card {
             background: white;
             color: #333;
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
-            width: 100%;
-            max-width: 320px;
+            width: 90%;
+            max-width: 350px;
             box-shadow: 0 0 30px gold;
             transform: rotate(-2deg);
             margin-bottom: 20px;
             border: 2px dashed #333;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .voucher-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            color: #228B22;
+            position: relative;
         }
         
-        .voucher-reward {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.8rem;
-            color: #ff4757;
-            margin: 15px 0;
-        }
-
-        #final-photo {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #333;
-            margin-top: 10px;
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0) rotate(-10deg); opacity: 0; }
-            to { transform: scale(1) rotate(-2deg); opacity: 1; }
+        .voucher-card::after {
+            content: "VALABIL";
+            position: absolute;
+            top: 10px; right: 10px;
+            font-weight: bold;
+            color: #ccc;
+            border: 2px solid #ccc;
+            padding: 2px 5px;
+            transform: rotate(15deg);
+            font-size: 0.8rem;
         }
 
         button {
@@ -196,9 +187,24 @@
             transition: transform 0.2s;
             margin-top: 20px;
         }
-
         button:active { transform: scale(0.95); }
         .hidden { display: none !important; }
+
+        /* Mesaje plutitoare */
+        .floating-msg {
+            position: absolute;
+            font-weight: bold;
+            color: #ff4757;
+            font-size: 1.3rem;
+            pointer-events: none;
+            z-index: 50;
+            text-shadow: 2px 2px 0 #fff;
+            animation: floatUp 1s ease-out forwards;
+            white-space: nowrap;
+        }
+        @keyframes floatUp {
+            to { transform: translateY(-60px) scale(1.3); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -207,8 +213,6 @@
         <source src="https://actions.google.com/sounds/v1/ambiences/forest_morning.ogg" type="audio/ogg">
     </audio>
 
-    <div id="flash-overlay"></div>
-
     <h1>🌲 Pădurea Ioanei 🌲</h1>
     
     <div id="game-container">
@@ -216,29 +220,37 @@
     </div>
 
     <div id="start-screen" class="modal">
-        <h2>Salut, Ioana!</h2>
-        <p>Valea Doftanei e frumoasă, dar...<br>ai încercat să prinzi o inimă de aur? 💛</p>
-        <p style="font-size: 0.9rem; color: #ddd; margin-top: 20px;">
-            🌲 +1 punct: Brazi & Flori<br>
-            💛 +5 puncte: Inima Rară<br>
-            🌧️ -3 puncte: Ploaie
+        <h2>Salut, Ioana! ❤️</h2>
+        <p>Știu că îți place la Valea Doftanei, așa că ți-am adus pădurea pe telefon.</p>
+        <p style="font-size: 0.9rem; color: #eee; margin-top: 20px; line-height: 1.8;">
+            🌲 Prinde Brazii<br>
+            💛 Prinde Inima de Aur (+5 p)<br>
+            💌 <b>Caută Scrisoarea Secretă...</b>
         </p>
-        <button onclick="startGame()">Start Aventură!</button>
+        <button onclick="startGame()">Start Vacanță!</button>
+    </div>
+
+    <div id="letter-modal" class="modal hidden" style="background: rgba(255,255,255,0.95) !important;">
+        <h2 style="color: #333;">Draga mea,</h2>
+        <p class="handwritten-text">
+            Sper că te relaxezi și te bucuri de aerul curat! <br>
+            M-am gândit să fac micul ăsta joc ca să zâmbești puțin. <br>
+            Îmi e dor de tine și abia aștept să te văd!
+            <br><br>
+            Cu drag,<br>
+            [Numele Tău]
+        </p>
+        <button class="close-letter-btn" onclick="closeLetter()">Împăturește scrisoarea</button>
     </div>
 
     <div id="end-screen" class="modal hidden">
         <div class="voucher-card">
-            <div class="voucher-title">🎟️ Bilet Câștigător</div>
-            <p>Acest bilet este valabil pentru:</p>
-            
-            <div class="voucher-reward">O Cină Romantică</div>
-            
-            <p>La întoarcerea în București!</p>
-            
-            <img id="final-photo" src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=300&auto=format&fit=crop" alt="Noi">
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom:10px; margin-top:0;">🎫 VOUCHER CADOU</h3>
+            <p>Valabil pentru:</p>
+            <h2 style="color: #ff4757; font-family: 'Pacifico';">O Cină Romantică</h2>
+            <p>La întoarcere!</p>
         </div>
-        
-        <p style="margin-top:10px">Te iubesc!</p>
+        <p>Felicitări, ai câștigat!</p>
         <button onclick="restartGame()">Mai joacă o dată</button>
     </div>
 
@@ -247,36 +259,35 @@
         const scoreBoard = document.getElementById('score-board');
         const startScreen = document.getElementById('start-screen');
         const endScreen = document.getElementById('end-screen');
+        const letterModal = document.getElementById('letter-modal');
         const bgMusic = document.getElementById('bg-music');
-        const flashOverlay = document.getElementById('flash-overlay');
         
         let score = 0;
         let gameActive = false;
+        let isPaused = false; // Pentru cand citeste scrisoarea
         let spawnInterval;
+        let letterFound = false; // Sa apara o singura data pe joc
         
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
-        const goldenItem = '💛'; // Inima de aur
-
-        // Mesaje personalizate
-        const loveMessages = [
-            "Te iubesc! ❤️", "Mi-e dor! 🤗", "Ești super! ✨", 
-            "Frumoaso! 😍", "Pupici! 😘", "Relaxare! 🧘‍♀️"
-        ];
-
-        const targetScore = 25; // Scor puțin mai mare pentru că avem inima
+        
+        const targetScore = 30; 
 
         function startGame() {
             score = 0;
             updateScore(0);
             gameActive = true;
+            isPaused = false;
+            letterFound = false;
+            
             startScreen.classList.add('hidden');
             endScreen.classList.add('hidden');
+            letterModal.classList.add('hidden');
 
             bgMusic.volume = 0.4;
-            bgMusic.play().catch(e => console.log("Audio waiting for interaction"));
+            bgMusic.play().catch(e => console.log("Audio waiting"));
             
-            spawnInterval = setInterval(spawnItem, 700);
+            spawnInterval = setInterval(spawnLoop, 700);
         }
 
         function updateScore(val) {
@@ -285,48 +296,61 @@
             scoreBoard.innerText = 'Scor: ' + score + ' / ' + targetScore;
         }
 
-        function spawnItem() {
-            if (!gameActive) return;
+        // Functia principala care decide ce cade
+        function spawnLoop() {
+            if (!gameActive || isPaused) return;
 
+            const rand = Math.random();
+            
+            // Logica de sansa
+            // 1. Scrisoarea (foarte rara, o data pe joc)
+            if (!letterFound && rand < 0.03 && score > 5) { 
+                spawnEntity('💌', 'letter');
+                return;
+            }
+
+            // 2. Inima de Aur (rara)
+            if (rand < 0.05) { 
+                spawnEntity('💛', 'gold');
+                return;
+            }
+
+            // 3. Ploaie (medie)
+            if (rand < 0.30) {
+                const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
+                spawnEntity(badIcon, 'bad');
+                return;
+            }
+
+            // 4. Normal (restul)
+            const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
+            spawnEntity(goodIcon, 'good');
+        }
+
+        function spawnEntity(icon, type) {
             const item = document.createElement('div');
             item.classList.add('item');
+            item.innerText = icon;
+            item.dataset.type = type;
             
-            // LOGICA DE SPAWN
-            const rand = Math.random();
-            let isBad = false;
-            let isGolden = false;
+            // Stiluri specifice
+            if(type === 'gold') item.classList.add('golden-item');
+            if(type === 'letter') item.classList.add('letter-item');
+            if(type === 'bad') item.style.zIndex = "15";
 
-            if (rand < 0.05) { // 5% sanse pentru Inima de AUR
-                isGolden = true;
-                item.innerText = goldenItem;
-                item.classList.add('golden-item'); // Stil special
-                item.dataset.type = 'gold';
-            } else if (rand < 0.30) { // 25% sanse "rau"
-                isBad = true;
-                item.innerText = badItems[Math.floor(Math.random() * badItems.length)];
-                item.dataset.type = 'bad';
-                item.style.zIndex = "15";
-            } else { // Restul "bun"
-                item.innerText = goodItems[Math.floor(Math.random() * goodItems.length)];
-                item.dataset.type = 'good';
-            }
-            
-            // Pozitie random
             item.style.left = Math.random() * 85 + 5 + '%';
             
-            // Viteza
             let duration = Math.random() * 2 + 3;
-            if(isGolden) duration = 2; // Inima cade repede!
+            if(type === 'gold' || type === 'letter') duration = 2.5; // Cad putin mai repede sa fie provocare
             
             item.style.animationDuration = duration + 's';
 
-            // Interactiune
+            // Interaction Event
             const interact = (e) => {
-                e.preventDefault(); 
-                e.stopPropagation();
+                e.preventDefault(); e.stopPropagation();
                 let x = e.clientX || (e.touches && e.touches[0].clientX);
                 let y = e.clientY || (e.touches && e.touches[0].clientY);
-                catchItem(item, x, y);
+                catchItem(item, type, x, y);
             };
 
             item.addEventListener('touchstart', interact, {passive: false});
@@ -334,72 +358,86 @@
 
             gameContainer.appendChild(item);
 
-            setTimeout(() => {
-                if (item.parentNode) item.remove();
-            }, duration * 1000);
+            // Stergere automata
+            // Trebuie sa verificam periodic daca e pauza ca sa nu stergem elementele in timp ce ea citeste
+            let lifeTime = duration * 1000;
+            let checkInterval = setInterval(() => {
+                if(!isPaused) {
+                    lifeTime -= 100;
+                    if(lifeTime <= 0) {
+                        if(item.parentNode) item.remove();
+                        clearInterval(checkInterval);
+                    }
+                }
+            }, 100);
         }
 
-        function catchItem(element, x, y) {
-            if (!gameActive) return;
-            
-            const type = element.dataset.type;
+        function catchItem(item, type, x, y) {
+            if (!gameActive || isPaused) return;
+
+            if (type === 'letter') {
+                // 💌 A PRINS SCRISOAREA
+                letterFound = true;
+                openLetter();
+                item.remove();
+                return;
+            }
 
             if (type === 'gold') {
-                // 💛 INIMA DE AUR
                 updateScore(5);
-                triggerFlash(); // Ecran alb
-                showFloatingText(x, y, "+5 SUPER!", "#FFD700"); // Text auriu
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Vibratie dubla
-
+                showFloatingText(x, y, "+5 SUPER!", "#FFD700");
+                if (navigator.vibrate) navigator.vibrate([100,50,100]);
             } else if (type === 'bad') {
-                // 🌧️ PLOAIE
                 updateScore(-3);
                 document.body.classList.add('shake');
-                element.innerText = "❌";
                 setTimeout(() => document.body.classList.remove('shake'), 500);
                 if (navigator.vibrate) navigator.vibrate(200);
-
+                item.innerText = "❌";
             } else {
-                // 🌲 NORMAL
                 updateScore(1);
-                // Mesaj random
-                const msg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
-                showFloatingText(x, y, msg, "#ff4757");
+                showFloatingText(x, y, "❤️", "#ff4757");
             }
 
-            // Animatie disparitie
-            element.style.transition = "all 0.1s";
-            element.style.transform = "scale(1.5)";
-            element.style.opacity = "0";
+            item.style.transition = "all 0.1s";
+            item.style.transform = "scale(1.5)";
+            item.style.opacity = "0";
+            setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
+
+            if (score >= targetScore) endGame();
+        }
+
+        // --- LETTER LOGIC ---
+        function openLetter() {
+            isPaused = true; // Oprim caderea
+            // Oprim animatiile CSS la toate elementele curente
+            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused');
             
-            setTimeout(() => { if(element.parentNode) element.remove(); }, 100);
-
-            if (score >= targetScore) {
-                endGame();
-            }
+            letterModal.classList.remove('hidden');
         }
 
-        function triggerFlash() {
-            flashOverlay.style.opacity = "0.8";
-            setTimeout(() => { flashOverlay.style.opacity = "0"; }, 200);
+        function closeLetter() {
+            letterModal.classList.add('hidden');
+            isPaused = false;
+            // Repornim animatiile
+            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running');
         }
 
+        // --- UTILS ---
         function showFloatingText(x, y, text, color) {
             const msg = document.createElement('div');
             msg.classList.add('floating-msg');
             msg.innerText = text;
             msg.style.color = color;
-            msg.style.left = (x - 30) + 'px';
+            msg.style.left = (x - 20) + 'px';
             msg.style.top = (y - 50) + 'px';
             gameContainer.appendChild(msg);
-            setTimeout(() => { msg.remove(); }, 1000);
+            setTimeout(() => msg.remove(), 1000);
         }
 
         function endGame() {
             gameActive = false;
             clearInterval(spawnInterval);
             document.querySelectorAll('.item').forEach(el => el.remove());
-            
             setTimeout(() => {
                 endScreen.classList.remove('hidden');
                 triggerConfetti();
@@ -407,17 +445,13 @@
         }
 
         function triggerConfetti() {
-            var duration = 3 * 1000;
+            var duration = 3000;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
-
             var interval = setInterval(function() {
-              var timeLeft = (Date.now() + duration) - Date.now(); // Simplified logic
-              if (timeLeft <= 0) return clearInterval(interval); // Fix infinite loop logic
-              
+              var timeLeft = (Date.now() + 3000) - Date.now(); // Fix pt loop
+              if (timeLeft <= 0) return clearInterval(interval);
               confetti(Object.assign({}, defaults, { particleCount: 50, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
-            
-            // Opreste confetti dupa 3 secunde
             setTimeout(() => clearInterval(interval), 3000);
         }
 
