@@ -26,8 +26,28 @@
 
         body::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3); 
+            background: rgba(0, 0, 0, 0.4); 
             z-index: 1;
+        }
+
+        /* LICURICI (Fireflies) */
+        .firefly {
+            position: absolute;
+            width: 4px; height: 4px;
+            background-color: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b;
+            opacity: 0;
+            z-index: 2;
+            animation: fly 15s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100px, -100vh); opacity: 0; }
         }
 
         h1, #game-container, .modal, #loading-screen { z-index: 5; }
@@ -64,7 +84,6 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* ELEMENTE JOC */
         .item {
             position: absolute;
             font-size: 3.5rem;
@@ -89,11 +108,10 @@
             z-index: 25 !important;
         }
 
-        /* STIL PENTRU URS */
         .bear-item {
-            font-size: 5rem !important; /* Ursul e mare */
+            font-size: 5rem !important;
             z-index: 18 !important;
-            filter: drop-shadow(0 0 10px red); /* Are o aură periculoasă */
+            filter: drop-shadow(0 0 10px red);
         }
 
         @keyframes floatDown {
@@ -105,7 +123,6 @@
             to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        /* MODALE */
         .modal {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -122,137 +139,83 @@
             backdrop-filter: blur(8px);
         }
 
-        /* LOADING SCREEN */
-        #loading-screen {
-            background: #2c3e50;
-            z-index: 200;
-        }
+        /* LOADING */
+        #loading-screen { background: #2c3e50; z-index: 200; }
         .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #ff6b6b;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            border: 5px solid #f3f3f3; border-top: 5px solid #ff6b6b;
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #loading-text { font-size: 1.2rem; font-family: 'Quicksand'; color: #ddd; }
 
         /* SCRISOARE */
         #letter-modal {
-            background: #fffdf0; 
-            color: #333;
-            padding: 30px 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background: #fffdf0; color: #333; padding: 30px 20px;
+            border-radius: 5px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
             border: 10px solid rgba(0,0,0,0.05);
         }
-        
         .handwritten-text {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.2rem;
-            line-height: 1.5;
-            margin-bottom: 30px;
-            color: #2c3e50;
-            text-align: left;
-            width: 100%;
-            max-width: 500px;
+            font-family: 'Pacifico', cursive; font-size: 1.2rem;
+            line-height: 1.5; margin-bottom: 30px; color: #2c3e50;
+            text-align: left; width: 100%; max-width: 500px;
         }
-
         .close-letter-btn {
-            background-color: #333;
-            color: white;
-            font-size: 0.9rem;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
+            background-color: #333; color: white; font-size: 0.9rem;
+            padding: 10px 20px; border: none; border-radius: 50px; cursor: pointer;
         }
 
-        /* VOUCHER */
+        /* VOUCHER & COUNTDOWN */
         .voucher-card {
-            background: white;
-            color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            width: 85%;
-            max-width: 350px;
+            background: white; color: #333; padding: 20px;
+            border-radius: 10px; width: 85%; max-width: 350px;
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
-            transform: rotate(-2deg);
-            margin-bottom: 25px;
-            border: 2px dashed #333;
-            position: relative;
+            transform: rotate(-2deg); margin-bottom: 15px;
+            border: 2px dashed #333; position: relative;
         }
-        
         .voucher-card::after {
-            content: "VALABIL";
-            position: absolute;
-            top: 10px; right: 10px;
-            font-weight: bold;
-            color: #bbb;
-            border: 2px solid #bbb;
-            padding: 2px 5px;
-            transform: rotate(15deg);
-            font-size: 0.7rem;
+            content: "VALABIL"; position: absolute; top: 10px; right: 10px;
+            font-weight: bold; color: #bbb; border: 2px solid #bbb;
+            padding: 2px 5px; transform: rotate(15deg); font-size: 0.7rem;
+        }
+
+        #countdown-container {
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 20px;
+        }
+        #countdown-timer {
+            font-size: 1.4rem; font-weight: bold; color: #90EE90;
+            font-family: monospace; letter-spacing: 1px;
         }
 
         button.primary-btn {
-            background-color: #ff6b6b;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-            margin-top: 10px;
+            background-color: #ff6b6b; border: none; padding: 15px 40px;
+            font-size: 1.1rem; color: white; border-radius: 50px; cursor: pointer;
+            font-family: 'Quicksand', sans-serif; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s; margin-top: 10px;
         }
         
         button.whatsapp-btn {
-            background-color: #25D366;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1rem;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            margin-top: 15px;
-            margin-bottom: 10px;
+            background-color: #25D366; border: none; padding: 12px 25px;
+            font-size: 0.9rem; color: white; border-radius: 50px; cursor: pointer;
+            font-family: 'Quicksand', sans-serif; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-top: 10px; margin-bottom: 10px;
         }
 
         button:active { transform: scale(0.95); }
         .hidden { display: none !important; }
-
         .shake { animation: shake 0.5s; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-15px); }
-            40% { transform: translateX(15px); }
-            60% { transform: translateX(-15px); }
-            80% { transform: translateX(15px); }
+            25% { transform: translateX(-15px); }
+            75% { transform: translateX(15px); }
         }
-
         .floating-msg {
-            position: absolute;
-            font-weight: bold;
-            color: #ff4757;
-            font-size: 1.3rem;
-            pointer-events: none;
-            z-index: 50;
-            text-shadow: 2px 2px 0 #fff;
-            animation: floatUp 1s ease-out forwards;
+            position: absolute; font-weight: bold; color: #ff4757;
+            font-size: 1.3rem; pointer-events: none; z-index: 50;
+            text-shadow: 2px 2px 0 #fff; animation: floatUp 1s ease-out forwards;
             white-space: nowrap;
         }
-        @keyframes floatUp {
-            to { transform: translateY(-80px) scale(1.2); opacity: 0; }
-        }
+        @keyframes floatUp { to { transform: translateY(-80px) scale(1.2); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -263,7 +226,7 @@
 
     <div id="loading-screen" class="modal">
         <div class="loader"></div>
-        <p id="loading-text">Se încarcă aerul curat...</p>
+        <p id="loading-text" style="color:#ddd">Se încarcă aerul curat...</p>
     </div>
 
     <h1>🌲 Pădurea Ioanei 🌲</h1>
@@ -301,19 +264,21 @@
 
     <div id="end-screen" class="modal hidden">
         <div class="voucher-card">
-            <h3 style="border-bottom: 2px solid #eee; padding-bottom:10px; margin-top:0;">🎫 VOUCHER CÂȘTIGĂTOR</h3>
-            <p>Valabil pentru:</p>
-            <h2 style="color: #ff4757; font-family: 'Pacifico'; font-size: 1.6rem;">Un Masaj VIP la Tălpi</h2>
-            <p>La întoarcere!</p>
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom:10px; margin-top:0;">🎫 VOUCHER</h3>
+            <p style="margin:5px 0">Valabil pentru:</p>
+            <h2 style="color: #ff4757; font-family: 'Pacifico'; font-size: 1.6rem; margin:10px 0;">Un Masaj VIP la Tălpi</h2>
         </div>
         
-        <p>Bravo! Ai supraviețuit!</p>
+        <div id="countdown-container">
+            <p style="margin:0; font-size:0.9rem;">Timp rămas până la livrarea masajului:</p>
+            <div id="countdown-timer">00z 00h 00m 00s</div>
+        </div>
         
         <button class="whatsapp-btn" onclick="sendWhatsapp()">
             Revendică Premiul pe WhatsApp 💬
         </button>
 
-        <button class="primary-btn" style="background-color: #555; font-size: 0.9rem; padding: 10px 20px;" onclick="restartGame()">Mai joacă o dată</button>
+        <button class="primary-btn" style="background-color: #555; font-size: 0.8rem; padding: 10px 20px;" onclick="restartGame()">Mai joacă o dată</button>
     </div>
 
     <script>
@@ -325,6 +290,7 @@
         const loadingScreen = document.getElementById('loading-screen');
         const loadingText = document.getElementById('loading-text');
         const bgMusic = document.getElementById('bg-music');
+        const countdownTimer = document.getElementById('countdown-timer');
         
         let score = 0;
         let gameActive = false;
@@ -335,80 +301,58 @@
         const goodItems = ['🌲', '🌲', '🌲', '🌰', '🍄', '🌸', '🌿', '⛰️'];
         const badItems = ['🌧️', '⛈️', '🦟'];
         
-        // Simulam incarcarea la inceput
+        // --- CONFIGURARE DATA REVENIRII ---
+        // Aici pui data cand se intoarce. Am pus un default: Azi + 3 zile la ora 19:00
+        const now = new Date();
+        const returnDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 19, 0, 0); 
+        // Daca vrei o data fixa, sterge linia de sus si decomenteaza linia de jos:
+        // const returnDate = new Date("Feb 25, 2024 18:00:00"); 
+
         window.onload = function() {
-            const texts = [
-                "Se încarcă aerul curat...", 
-                "Se alungă țânțarii...", 
-                "Se pregătește masajul...", 
-                "Gata de aventură!"
-            ];
+            createFireflies(); // Pornim licuricii
+            const texts = ["Se încarcă aerul curat...", "Se alungă țânțarii...", "Se pregătește masajul...", "Gata de aventură!"];
             let i = 0;
             const interval = setInterval(() => {
                 i++;
-                if(i < texts.length) {
-                    loadingText.innerText = texts[i];
-                } else {
+                if(i < texts.length) loadingText.innerText = texts[i];
+                else {
                     clearInterval(interval);
                     loadingScreen.classList.add('hidden');
                     startScreen.classList.remove('hidden');
                 }
-            }, 800); // Schimba textul la fiecare 0.8 secunde
+            }, 800);
+            
+            // Pornim countdown-ul
+            setInterval(updateCountdown, 1000);
         };
 
         const targetScore = 30; 
 
         function startGame() {
-            score = 0;
-            updateScore(0);
-            gameActive = true;
-            isPaused = false;
-            letterFound = false;
-            
-            startScreen.classList.add('hidden');
-            endScreen.classList.add('hidden');
-            letterModal.classList.add('hidden');
-
-            bgMusic.volume = 0.4;
-            bgMusic.play().catch(e => console.log("Audio waiting"));
-            
+            score = 0; updateScore(0);
+            gameActive = true; isPaused = false; letterFound = false;
+            startScreen.classList.add('hidden'); endScreen.classList.add('hidden'); letterModal.classList.add('hidden');
+            bgMusic.volume = 0.4; bgMusic.play().catch(e => console.log("Audio waiting"));
             spawnInterval = setInterval(spawnLoop, 700);
         }
 
         function updateScore(val) {
-            score += val;
-            if(score < 0) score = 0;
+            score += val; if(score < 0) score = 0;
             scoreBoard.innerText = 'Scor: ' + score + ' / ' + targetScore;
         }
 
         function spawnLoop() {
             if (!gameActive || isPaused) return;
-
             const rand = Math.random();
             
-            // 1. Scrisoarea (O singura data)
-            if (!letterFound && rand < 0.03 && score > 5) { 
-                spawnEntity('💌', 'letter');
-                return;
-            }
-            // 2. Inima de Aur (rara)
-            if (rand < 0.05) { 
-                spawnEntity('💛', 'gold');
-                return;
-            }
-            // 3. URSUL (Foarte rar si periculos) - 3% sanse
-            if (rand < 0.03) {
-                spawnEntity('🐻', 'bear'); // URSUL
-                return;
-            }
-
-            // 4. Ploaie (medie)
+            if (!letterFound && rand < 0.03 && score > 5) { spawnEntity('💌', 'letter'); return; }
+            if (rand < 0.05) { spawnEntity('💛', 'gold'); return; }
+            if (rand < 0.03) { spawnEntity('🐻', 'bear'); return; }
             if (rand < 0.25) {
                 const badIcon = badItems[Math.floor(Math.random() * badItems.length)];
                 spawnEntity(badIcon, 'bad');
                 return;
             }
-            // 5. Normal
             const goodIcon = goodItems[Math.floor(Math.random() * goodItems.length)];
             spawnEntity(goodIcon, 'good');
         }
@@ -416,20 +360,16 @@
         function spawnEntity(icon, type) {
             const item = document.createElement('div');
             item.classList.add('item');
-            item.innerText = icon;
-            item.dataset.type = type;
-            
+            item.innerText = icon; item.dataset.type = type;
             if(type === 'gold') item.classList.add('golden-item');
             if(type === 'letter') item.classList.add('letter-item');
-            if(type === 'bear') item.classList.add('bear-item'); // Stil urs
+            if(type === 'bear') item.classList.add('bear-item');
             if(type === 'bad') item.style.zIndex = "15";
 
             item.style.left = Math.random() * 80 + 10 + '%';
-            
             let duration = Math.random() * 2 + 3;
             if(type === 'gold' || type === 'letter') duration = 2.5;
-            if(type === 'bear') duration = 2; // Ursul e rapid!
-            
+            if(type === 'bear') duration = 2;
             item.style.animationDuration = duration + 's';
 
             const interact = (e) => {
@@ -438,119 +378,98 @@
                 let y = e.clientY || (e.touches && e.touches[0].clientY);
                 catchItem(item, type, x, y);
             };
-
             item.addEventListener('touchstart', interact, {passive: false});
             item.addEventListener('mousedown', interact);
-
             gameContainer.appendChild(item);
 
             let lifeTime = duration * 1000;
             let checkInterval = setInterval(() => {
                 if(!isPaused) {
                     lifeTime -= 100;
-                    if(lifeTime <= 0) {
-                        if(item.parentNode) item.remove();
-                        clearInterval(checkInterval);
-                    }
+                    if(lifeTime <= 0) { if(item.parentNode) item.remove(); clearInterval(checkInterval); }
                 }
             }, 100);
         }
 
         function catchItem(item, type, x, y) {
             if (!gameActive || isPaused) return;
-
-            if (type === 'letter') {
-                letterFound = true;
-                openLetter();
-                item.remove();
-                return;
-            }
-
+            if (type === 'letter') { letterFound = true; openLetter(); item.remove(); return; }
+            
             if (type === 'gold') {
-                updateScore(5);
-                showFloatingText(x, y, "+5 IUBIRE!", "#FFD700");
+                updateScore(5); showFloatingText(x, y, "+5 IUBIRE!", "#FFD700");
                 if (navigator.vibrate) navigator.vibrate([50,50,50]);
-            } 
-            else if (type === 'bear') {
-                // 🐻 A PRINS URSUL!
-                updateScore(-5); // Penalizare mare
-                document.body.classList.add('shake');
+            } else if (type === 'bear') {
+                updateScore(-5); document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-                if (navigator.vibrate) navigator.vibrate(500); // Vibratie lunga
-                showFloatingText(x, y, "MORRR! 🐻", "red");
-                item.innerText = "🐾";
-            }
-            else if (type === 'bad') {
-                updateScore(-2);
-                document.body.classList.add('shake');
+                if (navigator.vibrate) navigator.vibrate(500);
+                showFloatingText(x, y, "MORRR! 🐻", "red"); item.innerText = "🐾";
+            } else if (type === 'bad') {
+                updateScore(-2); document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-                if (navigator.vibrate) navigator.vibrate(200);
-                item.innerText = "❌";
+                if (navigator.vibrate) navigator.vibrate(200); item.innerText = "❌";
             } else {
-                updateScore(1);
-                showFloatingText(x, y, "❤️", "#ff4757");
+                updateScore(1); showFloatingText(x, y, "❤️", "#ff4757");
             }
-
-            item.style.transition = "all 0.1s";
-            item.style.transform = "scale(1.5)";
-            item.style.opacity = "0";
+            item.style.transition = "all 0.1s"; item.style.transform = "scale(1.5)"; item.style.opacity = "0";
             setTimeout(() => { if(item.parentNode) item.remove(); }, 100);
-
             if (score >= targetScore) endGame();
         }
 
-        function openLetter() {
-            isPaused = true; 
-            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused');
-            letterModal.classList.remove('hidden');
+        function createFireflies() {
+            for(let i=0; i<15; i++) {
+                const fly = document.createElement('div');
+                fly.classList.add('firefly');
+                fly.style.left = Math.random() * 100 + '%';
+                fly.style.top = Math.random() * 100 + '%';
+                fly.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                fly.style.animationDelay = (Math.random() * 5) + 's';
+                document.body.appendChild(fly);
+            }
         }
 
-        function closeLetter() {
-            letterModal.classList.add('hidden');
-            isPaused = false;
-            document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running');
+        function updateCountdown() {
+            const nowTime = new Date().getTime();
+            const diff = returnDate - nowTime;
+            
+            if (diff < 0) {
+                countdownTimer.innerText = "Te aștept acasă!";
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            countdownTimer.innerText = `${days}z ${hours}h ${minutes}m`;
         }
 
+        function openLetter() { isPaused = true; document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'paused'); letterModal.classList.remove('hidden'); }
+        function closeLetter() { letterModal.classList.add('hidden'); isPaused = false; document.querySelectorAll('.item').forEach(el => el.style.animationPlayState = 'running'); }
         function showFloatingText(x, y, text, color) {
-            const msg = document.createElement('div');
-            msg.classList.add('floating-msg');
-            msg.innerText = text;
-            msg.style.color = color;
-            msg.style.left = (x - 20) + 'px';
-            msg.style.top = (y - 50) + 'px';
-            gameContainer.appendChild(msg);
-            setTimeout(() => msg.remove(), 1000);
+            const msg = document.createElement('div'); msg.classList.add('floating-msg');
+            msg.innerText = text; msg.style.color = color;
+            msg.style.left = (x - 20) + 'px'; msg.style.top = (y - 50) + 'px';
+            gameContainer.appendChild(msg); setTimeout(() => msg.remove(), 1000);
         }
-
         function endGame() {
-            gameActive = false;
-            clearInterval(spawnInterval);
+            gameActive = false; clearInterval(spawnInterval);
             document.querySelectorAll('.item').forEach(el => el.remove());
-            setTimeout(() => {
-                endScreen.classList.remove('hidden');
-                triggerConfetti();
-            }, 300);
+            setTimeout(() => { endScreen.classList.remove('hidden'); triggerConfetti(); }, 300);
         }
-
         function sendWhatsapp() {
             let text = "Ionuț, am câștigat! 🌲 Vreau masajul ăla VIP! 🦶 (Și m-am ferit de urși!)";
             let encodedText = encodeURIComponent(text);
             window.open(`https://wa.me/?text=${encodedText}`, '_blank');
         }
-
         function triggerConfetti() {
-            var duration = 3000;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
+            var duration = 3000; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 200 };
             var interval = setInterval(function() {
               var timeLeft = (Date.now() + 3000) - Date.now();
               if (timeLeft <= 0) return clearInterval(interval);
               confetti(Object.assign({}, defaults, { particleCount: 50, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
         }
-
-        function restartGame() {
-            startGame();
-        }
+        function restartGame() { startGame(); }
     </script>
 </body>
 </html>
